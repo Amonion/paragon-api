@@ -31,9 +31,8 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'https://schoolingsocial.netlify.app',
-      'https://schoolingweb.netlify.app',
-      'https://schoolingsocial.com',
+      'https://paragonfarmsltd.netlify.app',
+      'https://paragonfarmsltd.com',
       'https://schooling-client-v1.onrender.com',
     ],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
