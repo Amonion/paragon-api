@@ -5,6 +5,8 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { handleError } from './utils/errorHandler'
+import companyRoutes from './routes/companyRoutes'
+import productRoutes from './routes/productRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 import { UsersSocket } from './routes/socket/usersSocket'
@@ -31,6 +33,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:3001',
       'https://paragonfarmsltd.netlify.app',
       'https://paragonfarmsltd.com',
       'https://schooling-client-v1.onrender.com',
@@ -74,6 +77,8 @@ io.on('connection', (socket) => {
 
 app.use(bodyParser.json())
 
+app.use('/api/v1/company', companyRoutes)
+app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/users', userRoutes)
 
 app.use((req, res, next) => {

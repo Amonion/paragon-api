@@ -16,7 +16,7 @@ import {
   updateExpenses,
   updatePolicy,
   updatePosition,
-} from '../../controllers/company/companyController'
+} from '../controllers/company/companyController'
 const upload = multer()
 
 const router = express.Router()

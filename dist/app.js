@@ -20,6 +20,8 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const errorHandler_1 = require("./utils/errorHandler");
+const companyRoutes_1 = __importDefault(require("./routes/companyRoutes"));
+const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 const usersSocket_1 = require("./routes/socket/usersSocket");
@@ -37,6 +39,7 @@ app.use(requestLogger);
 app.use((0, cors_1.default)({
     origin: [
         'http://localhost:3000',
+        'http://localhost:3001',
         'https://paragonfarmsltd.netlify.app',
         'https://paragonfarmsltd.com',
         'https://schooling-client-v1.onrender.com',
@@ -74,6 +77,8 @@ io.on('connection', (socket) => {
     });
 });
 app.use(body_parser_1.default.json());
+app.use('/api/v1/company', companyRoutes_1.default);
+app.use('/api/v1/products', productRoutes_1.default);
 app.use('/api/v1/users', userRoutes_1.default);
 app.use((req, res, next) => {
     (0, errorHandler_1.handleError)(res, 404, `Request not found: ${req.method} ${req.originalUrl}`);
