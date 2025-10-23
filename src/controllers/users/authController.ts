@@ -7,13 +7,14 @@ import { User } from '../../models/users/user'
 dotenv.config()
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body
+  const { username, password } = req.body
   try {
-    const user = await User.findOne({ email }).select('+password')
+    const user = await User.findOne({ username }).select('+password')
+    console.log(user, req.body)
     if (!user || !user.password) {
-      res
-        .status(404)
-        .json({ message: 'Sorry incorrect email or password, try again.' })
+      res.status(404).json({
+        message: 'Sorry user not found username or password, try again.',
+      })
       return
     }
 
@@ -21,12 +22,12 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     if (!isPasswordValid) {
       res
         .status(401)
-        .json({ message: 'Sorry incorrect email or password, try again.' })
+        .json({ message: 'Sorry incorrect username or password, try again.' })
       return
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, username: user.username },
       process.env.JWT_SECRET || '',
       { expiresIn: '30d' }
     )

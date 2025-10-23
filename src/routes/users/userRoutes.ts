@@ -3,18 +3,15 @@ import multer from 'multer'
 const upload = multer()
 import {
   loginUser,
-  getAuthUser,
   getCurrentUser,
 } from '../../controllers/users/authController'
 import {
   getAUser,
   getUsers,
   updateUser,
-  deleteUser,
   createUser,
   getExistingUsername,
   searchAccounts,
-  deleteMyData,
 } from '../../controllers/users/userController'
 
 const router = express.Router()

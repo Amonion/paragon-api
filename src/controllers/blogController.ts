@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import { IProduct, Product } from '../models/productModel'
 import { queryData, search } from '../utils/query'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
+import { Blog, IBlog } from '../models/blogModel'
 
-export const createProduct = async (
+export const createBlog = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -14,10 +14,10 @@ export const createProduct = async (
       req.body[file.fieldName] = file.s3Url
     })
 
-    await Product.create(req.body)
-    const result = await queryData<IProduct>(Product, req)
+    await Blog.create(req.body)
+    const result = await queryData<IBlog>(Blog, req)
     res.status(200).json({
-      message: 'Product is created successfully',
+      message: 'Blog was created successfully',
       result,
     })
   } catch (error: any) {
@@ -25,57 +25,56 @@ export const createProduct = async (
   }
 }
 
-export const getAProduct = async (
+export const getABlog = async (
   req: Request,
   res: Response
 ): Promise<Response | void> => {
   try {
-    const product = await Product.findById(req.params.id)
-    if (!product) {
-      return res.status(404).json({ message: 'product not found' })
+    const blog = await Blog.findById(req.params.id)
+    if (!blog) {
+      return res.status(404).json({ message: 'blog not found' })
     }
 
-    res.status(200).json({ data: product })
+    res.status(200).json({ data: blog })
   } catch (error) {
     console.log(error)
     handleError(res, undefined, undefined, error)
   }
 }
 
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateBlog = async (req: Request, res: Response) => {
   try {
     const uploadedFiles = await uploadFilesToS3(req)
     uploadedFiles.forEach((file) => {
       req.body[file.fieldName] = file.s3Url
     })
 
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     })
-    if (!product) {
-      return res.status(404).json({ message: 'product not found' })
+    if (!blog) {
+      return res.status(404).json({ message: 'blog not found' })
     }
 
     res.status(200).json({
-      message: 'The product is updated successfully',
-      data: product,
+      message: 'The blog is updated successfully',
+      data: blog,
     })
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }
 }
 
-export const getProducts = async (req: Request, res: Response) => {
+export const getBlogs = async (req: Request, res: Response) => {
   try {
-    const result = await queryData<IProduct>(Product, req)
-
+    const result = await queryData<IBlog>(Blog, req)
     res.status(200).json(result)
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }
 }
 
-export const searchProducts = (req: Request, res: Response) => {
-  return search(Product, req, res)
+export const searchBlogs = (req: Request, res: Response) => {
+  return search(Blog, req, res)
 }

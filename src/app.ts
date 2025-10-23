@@ -5,7 +5,9 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { handleError } from './utils/errorHandler'
+import blogRoutes from './routes/blogRoutes'
 import companyRoutes from './routes/companyRoutes'
+import faqRoutes from './routes/faqRoutes'
 import productRoutes from './routes/productRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
@@ -77,7 +79,9 @@ io.on('connection', (socket) => {
 
 app.use(bodyParser.json())
 
+app.use('/api/v1/blogs', blogRoutes)
 app.use('/api/v1/company', companyRoutes)
+app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/users', userRoutes)
 

@@ -4,8 +4,7 @@ import { queryData, search } from '../../utils/query'
 import { uploadFilesToS3 } from '../../utils/fileUpload'
 import bcrypt from 'bcryptjs'
 import { sendEmail } from '../../utils/sendEmail'
-import { DeletedUser, IUser, User } from '../../models/users/user'
-import { Chat } from '../../models/message/chatModel'
+import { IUser, User } from '../../models/users/user'
 import { SocialNotification } from '../../models/message/socialNotificationModel'
 
 export const createUser = async (
