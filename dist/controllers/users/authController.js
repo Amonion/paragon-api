@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fogottenPassword = exports.getAuthUser = exports.getCurrentUser = exports.loginUser = void 0;
+exports.fogottenPassword = exports.getAuthUser = exports.getCurrentUser = exports.updatePassword = exports.loginUser = void 0;
 const errorHandler_1 = require("../../utils/errorHandler");
 const dotenv_1 = __importDefault(require("dotenv"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -20,23 +20,23 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_1 = require("../../models/users/user");
 dotenv_1.default.config();
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
     try {
-        const user = yield user_1.User.findOne({ email }).select('+password');
+        const user = yield user_1.User.findOne({ username }).select('+password');
         if (!user || !user.password) {
-            res
-                .status(404)
-                .json({ message: 'Sorry incorrect email or password, try again.' });
+            res.status(404).json({
+                message: 'Sorry user not found username or password, try again.',
+            });
             return;
         }
         const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             res
                 .status(401)
-                .json({ message: 'Sorry incorrect email or password, try again.' });
+                .json({ message: 'Sorry incorrect username or password, try again.' });
             return;
         }
-        const token = jsonwebtoken_1.default.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET || '', { expiresIn: '30d' });
+        const token = jsonwebtoken_1.default.sign({ userId: user._id, username: user.username }, process.env.JWT_SECRET || '', { expiresIn: '30d' });
         user.password = undefined;
         res.status(200).json({
             message: 'Login successful',
@@ -49,6 +49,41 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.loginUser = loginUser;
+const updatePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { isTwoFactor, password, newPassword } = req.body;
+    try {
+        const user = yield user_1.User.findOne({ username: req.params.username }).select('+password');
+        if (!user) {
+            res
+                .status(404)
+                .json({ message: 'Sorry incorrect email or password, try again.' });
+            return;
+        }
+        if (req.body.newPassword) {
+            const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
+            if (!isPasswordValid) {
+                res
+                    .status(401)
+                    .json({ message: 'Sorry incorrect password, try again.' });
+                return;
+            }
+            const updatePassword = yield bcryptjs_1.default.hash(newPassword, 10);
+            yield user_1.User.findOneAndUpdate({ username: req.params.username }, { password: updatePassword });
+        }
+        else {
+            yield user_1.User.findOneAndUpdate({ username: req.params.username }, { isTwoFactor: req.body.isTwoFactor === 'true' ? true : false });
+        }
+        res.status(200).json({
+            message: req.body.newPassword
+                ? 'Your password has been updated successfully.'
+                : 'Your two factor authentication has been updated successfully.',
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.updatePassword = updatePassword;
 const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authHeader = req.headers.authorization;

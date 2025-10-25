@@ -9,6 +9,7 @@ import blogRoutes from './routes/blogRoutes'
 import companyRoutes from './routes/companyRoutes'
 import faqRoutes from './routes/faqRoutes'
 import productRoutes from './routes/productRoutes'
+import reviewRoutes from './routes/reviewRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 import { UsersSocket } from './routes/socket/usersSocket'
@@ -83,6 +84,7 @@ app.use('/api/v1/blogs', blogRoutes)
 app.use('/api/v1/company', companyRoutes)
 app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/products', productRoutes)
+app.use('/api/v1/reviews', reviewRoutes)
 app.use('/api/v1/users', userRoutes)
 
 app.use((req, res, next) => {

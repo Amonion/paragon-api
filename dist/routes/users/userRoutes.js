@@ -14,6 +14,10 @@ router.route('/username/:username').get(userController_1.getExistingUsername);
 router.route('/login').post(upload.any(), authController_1.loginUser);
 router.route('/auth').get(authController_1.getCurrentUser);
 router.route('/accounts').get(userController_1.searchAccounts);
-router.route('/:username').get(userController_1.getAUser).patch(upload.any(), userController_1.updateUser);
+router
+    .route('/:username')
+    .get(userController_1.getAUser)
+    .patch(upload.any(), userController_1.updateUser)
+    .post(upload.any(), authController_1.updatePassword);
 router.route('/').get(userController_1.getUsers).post(upload.any(), userController_1.createUser);
 exports.default = router;

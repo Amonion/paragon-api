@@ -4,6 +4,7 @@ const upload = multer()
 import {
   loginUser,
   getCurrentUser,
+  updatePassword,
 } from '../../controllers/users/authController'
 import {
   getAUser,
@@ -22,7 +23,11 @@ router.route('/login').post(upload.any(), loginUser)
 router.route('/auth').get(getCurrentUser)
 
 router.route('/accounts').get(searchAccounts)
-router.route('/:username').get(getAUser).patch(upload.any(), updateUser)
+router
+  .route('/:username')
+  .get(getAUser)
+  .patch(upload.any(), updateUser)
+  .post(upload.any(), updatePassword)
 router.route('/').get(getUsers).post(upload.any(), createUser)
 
 export default router

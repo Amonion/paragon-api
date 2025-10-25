@@ -9,21 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchProducts = exports.getProducts = exports.updateProduct = exports.getAProduct = exports.createProduct = void 0;
-const productModel_1 = require("../models/productModel");
+exports.searchFaqs = exports.getFaqs = exports.updateFaq = exports.getFaq = exports.createFaq = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
-const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const faqModel_1 = require("../models/faqModel");
+const createFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        yield productModel_1.Product.create(req.body);
-        const result = yield (0, query_1.queryData)(productModel_1.Product, req);
+        yield faqModel_1.Faq.create(req.body);
+        const result = yield (0, query_1.queryData)(faqModel_1.Faq, req);
         res.status(200).json({
-            message: 'Product is created successfully',
+            message: 'Faq was created successfully',
             result,
         });
     }
@@ -31,55 +31,55 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.createProduct = createProduct;
-const getAProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createFaq = createFaq;
+const getFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield productModel_1.Product.findById(req.params.id);
-        if (!product) {
-            return res.status(404).json({ message: 'product not found' });
+        const faq = yield faqModel_1.Faq.findById(req.params.id);
+        if (!faq) {
+            return res.status(404).json({ message: 'faq not found' });
         }
-        res.status(200).json({ data: product });
+        res.status(200).json({ data: faq });
     }
     catch (error) {
         console.log(error);
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.getAProduct = getAProduct;
-const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getFaq = getFaq;
+const updateFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        const product = yield productModel_1.Product.findByIdAndUpdate(req.params.id, req.body, {
+        const faq = yield faqModel_1.Faq.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         });
-        if (!product) {
-            return res.status(404).json({ message: 'product not found' });
+        if (!faq) {
+            return res.status(404).json({ message: 'faq not found' });
         }
         res.status(200).json({
-            message: 'The product is updated successfully',
-            data: product,
+            message: 'The faq is updated successfully',
+            data: faq,
         });
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.updateProduct = updateProduct;
-const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.updateFaq = updateFaq;
+const getFaqs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, query_1.queryData)(productModel_1.Product, req);
+        const result = yield (0, query_1.queryData)(faqModel_1.Faq, req);
         res.status(200).json(result);
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.getProducts = getProducts;
-const searchProducts = (req, res) => {
-    return (0, query_1.search)(productModel_1.Product, req, res);
+exports.getFaqs = getFaqs;
+const searchFaqs = (req, res) => {
+    return (0, query_1.search)(faqModel_1.Faq, req, res);
 };
-exports.searchProducts = searchProducts;
+exports.searchFaqs = searchFaqs;

@@ -7,6 +7,7 @@ export interface IUser extends Document {
   fullName: string
   email: string
   isFirstTime: boolean
+  isTwoFactor: boolean
   password: string
   passwordExpiresAt: Date
   passwordResetToken: string
@@ -31,6 +32,7 @@ const UserSchema: Schema = new Schema(
       lowercase: true,
     },
     isFirstTime: { type: Boolean, default: true },
+    isTwoFactor: { type: Boolean, default: false },
     password: {
       type: String,
       required: [true, 'Password is required'],

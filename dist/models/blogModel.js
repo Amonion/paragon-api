@@ -33,47 +33,16 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeletedUser = exports.User = void 0;
+exports.Blog = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const UserSchema = new mongoose_1.Schema({
-    active: { type: Boolean },
-    createdAt: { type: Date, default: Date.now },
-    fullName: { type: String },
-    email: {
-        type: String,
-        required: [true, 'Email is required'],
-        unique: [true, 'A user with this email already exists'],
-        match: [/\S+@\S+\.\S+/, 'Please use a valid email address'],
-        lowercase: true,
-    },
-    isFirstTime: { type: Boolean, default: true },
-    isTwoFactor: { type: Boolean, default: false },
-    password: {
-        type: String,
-        required: [true, 'Password is required'],
-        minlength: [6, 'Password must be at least 6 characters long'],
-        select: false,
-    },
-    passwordExpiresAt: { type: Date, default: null },
-    passwordResetToken: { type: String, default: null },
-    phone: { type: String },
+const BlogSchema = new mongoose_1.Schema({
+    content: { type: String },
+    title: { type: String },
+    subtitle: { type: String },
     picture: { type: String },
-    username: { type: String },
-    staffPositions: { type: Array, default: [] },
-    staffRanking: { type: Number },
-    status: { type: String, default: 'User' },
-}, {
-    timestamps: true,
-});
-exports.User = mongoose_1.default.model('User', UserSchema);
-const DeletedUserSchema = new mongoose_1.Schema({
-    bioUserId: { type: String, default: '' },
-    email: { type: String, default: '' },
-    username: { type: String, default: '' },
-    picture: { type: String, default: '' },
+    category: { type: String },
     createdAt: { type: Date, default: Date.now },
-    displayName: { type: String, default: '' },
 }, {
     timestamps: true,
 });
-exports.DeletedUser = mongoose_1.default.model('DeletedUser', DeletedUserSchema);
+exports.Blog = mongoose_1.default.model('Blog', BlogSchema);

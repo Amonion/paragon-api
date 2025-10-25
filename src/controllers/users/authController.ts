@@ -10,7 +10,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body
   try {
     const user = await User.findOne({ username }).select('+password')
-    console.log(user, req.body)
     if (!user || !user.password) {
       res.status(404).json({
         message: 'Sorry user not found username or password, try again.',
@@ -38,6 +37,53 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       message: 'Login successful',
       user,
       token,
+    })
+  } catch (error: unknown) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const updatePassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { isTwoFactor, password, newPassword } = req.body
+  try {
+    const user = await User.findOne({ username: req.params.username }).select(
+      '+password'
+    )
+    if (!user) {
+      res
+        .status(404)
+        .json({ message: 'Sorry incorrect email or password, try again.' })
+      return
+    }
+
+    if (req.body.newPassword) {
+      const isPasswordValid = await bcrypt.compare(password, user.password)
+      if (!isPasswordValid) {
+        res
+          .status(401)
+          .json({ message: 'Sorry incorrect password, try again.' })
+        return
+      }
+      const updatePassword = await bcrypt.hash(newPassword, 10)
+
+      await User.findOneAndUpdate(
+        { username: req.params.username },
+        { password: updatePassword }
+      )
+    } else {
+      await User.findOneAndUpdate(
+        { username: req.params.username },
+        { isTwoFactor: req.body.isTwoFactor === 'true' ? true : false }
+      )
+    }
+
+    res.status(200).json({
+      message: req.body.newPassword
+        ? 'Your password has been updated successfully.'
+        : 'Your two factor authentication has been updated successfully.',
     })
   } catch (error: unknown) {
     handleError(res, undefined, undefined, error)
