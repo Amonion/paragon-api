@@ -33,13 +33,16 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Product = void 0;
+exports.Stocking = exports.Product = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const ProductSchema = new mongoose_1.Schema({
     description: { type: String },
     name: { type: String },
+    purchaseUnit: { type: String },
     seoTitle: { type: String },
     picture: { type: String },
+    units: { type: Number },
+    unitPerPurchase: { type: Number, default: 1 },
     price: { type: Number },
     discount: { type: Number },
     costPrice: { type: Number },
@@ -48,3 +51,18 @@ const ProductSchema = new mongoose_1.Schema({
     timestamps: true,
 });
 exports.Product = mongoose_1.default.model('Product', ProductSchema);
+const StockingSchema = new mongoose_1.Schema({
+    staffName: { type: String },
+    name: { type: String },
+    picture: { type: String },
+    reason: { type: String },
+    units: { type: Number },
+    productId: { type: String },
+    video: { type: String },
+    amount: { type: String },
+    isProfit: { type: Boolean },
+    createdAt: { type: Date, default: Date.now },
+}, {
+    timestamps: true,
+});
+exports.Stocking = mongoose_1.default.model('Stocking', StockingSchema);

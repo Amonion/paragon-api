@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchProducts = exports.getProducts = exports.updateProduct = exports.getAProduct = exports.createProduct = void 0;
+exports.getProductStocks = exports.updateProductStock = exports.searchProducts = exports.deleteProduct = exports.getProducts = exports.updateProduct = exports.getAProduct = exports.createProduct = void 0;
 const productModel_1 = require("../models/productModel");
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
@@ -79,7 +79,45 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getProducts = getProducts;
+const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield productModel_1.Product.findByIdAndDelete(req.params.id);
+        const result = yield (0, query_1.queryData)(productModel_1.Product, req);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteProduct = deleteProduct;
 const searchProducts = (req, res) => {
     return (0, query_1.search)(productModel_1.Product, req, res);
 };
 exports.searchProducts = searchProducts;
+const updateProductStock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield productModel_1.Product.findByIdAndUpdate(req.body.productId, {
+            $inc: { units: req.body.isProfit ? req.body.units : -req.body.units },
+        });
+        yield productModel_1.Stocking.create(req.body);
+        const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);
+        res.status(200).json({
+            message: 'Product stock record has been created successfully',
+            result,
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.updateProductStock = updateProductStock;
+const getProductStocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.getProductStocks = getProductStocks;

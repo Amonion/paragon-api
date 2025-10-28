@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { IProduct, Product } from '../models/productModel'
+import { IProduct, IStocking, Product, Stocking } from '../models/productModel'
 import { queryData, search } from '../utils/query'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
@@ -76,6 +76,47 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 }
 
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id)
+    const result = await queryData<IProduct>(Product, req)
+
+    res.status(200).json(result)
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const searchProducts = (req: Request, res: Response) => {
   return search(Product, req, res)
+}
+
+export const updateProductStock = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    await Product.findByIdAndUpdate(req.body.productId, {
+      $inc: { units: req.body.isProfit ? req.body.units : -req.body.units },
+    })
+
+    await Stocking.create(req.body)
+    const result = await queryData<IStocking>(Stocking, req)
+
+    res.status(200).json({
+      message: 'Product stock record has been created successfully',
+      result,
+    })
+  } catch (error: any) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const getProductStocks = async (req: Request, res: Response) => {
+  try {
+    const result = await queryData<IStocking>(Stocking, req)
+    res.status(200).json(result)
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
 }
