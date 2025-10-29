@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductStocks = exports.updateProductStock = exports.searchProducts = exports.deleteProduct = exports.getProducts = exports.updateProduct = exports.getAProduct = exports.createProduct = void 0;
+exports.getProductStocks = exports.deleteProductStocking = exports.updateProductStock = exports.searchProducts = exports.deleteProduct = exports.getProducts = exports.updateProduct = exports.getAProduct = exports.createProduct = void 0;
 const productModel_1 = require("../models/productModel");
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
@@ -96,8 +96,13 @@ const searchProducts = (req, res) => {
 exports.searchProducts = searchProducts;
 const updateProductStock = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const isProfit = req.body.isProfit === true || req.body.isProfit === 'true';
+        const units = Number(req.body.units);
+        if (isNaN(units)) {
+            res.status(400).json({ message: 'Invalid units value' });
+        }
         yield productModel_1.Product.findByIdAndUpdate(req.body.productId, {
-            $inc: { units: req.body.isProfit ? req.body.units : -req.body.units },
+            $inc: { units: isProfit ? units : -units },
         });
         yield productModel_1.Stocking.create(req.body);
         const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);
@@ -111,6 +116,23 @@ const updateProductStock = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.updateProductStock = updateProductStock;
+const deleteProductStocking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const stock = yield productModel_1.Stocking.findByIdAndDelete(req.params.id);
+        if (!stock) {
+            return res.status(404).json({ message: 'stock not found' });
+        }
+        yield productModel_1.Product.findByIdAndUpdate(req.body.productId, {
+            $inc: { units: stock.isProfit ? -stock.units : stock.units },
+        });
+        const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteProductStocking = deleteProductStocking;
 const getProductStocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);

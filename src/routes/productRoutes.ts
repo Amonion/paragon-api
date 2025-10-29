@@ -5,6 +5,7 @@ const upload = multer()
 import {
   createProduct,
   deleteProduct,
+  deleteProductStocking,
   getAProduct,
   getProducts,
   getProductStocks,
@@ -20,6 +21,10 @@ router.route('/search').get(searchProducts)
 router
   .route('/stocking')
   .get(getProductStocks)
+  .post(upload.any(), updateProductStock)
+router
+  .route('/stocking/:id')
+  .delete(deleteProductStocking)
   .post(upload.any(), updateProductStock)
 
 router

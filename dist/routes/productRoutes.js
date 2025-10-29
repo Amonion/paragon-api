@@ -14,6 +14,10 @@ router
     .get(productController_1.getProductStocks)
     .post(upload.any(), productController_1.updateProductStock);
 router
+    .route('/stocking/:id')
+    .delete(productController_1.deleteProductStocking)
+    .post(upload.any(), productController_1.updateProductStock);
+router
     .route('/:id')
     .get(productController_1.getAProduct)
     .patch(upload.any(), productController_1.updateProduct)

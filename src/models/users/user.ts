@@ -16,6 +16,7 @@ export interface IUser extends Document {
   username: string
   staffPositions: string[]
   staffRanking: number
+  totalPurchase: number
   status: string
 }
 
@@ -46,6 +47,7 @@ const UserSchema: Schema = new Schema(
     username: { type: String },
     staffPositions: { type: Array, default: [] },
     staffRanking: { type: Number },
+    totalPurchase: { type: Number, default: 0 },
     status: { type: String, default: 'User' },
   },
   {

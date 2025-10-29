@@ -56,7 +56,7 @@ const StockingSchema: Schema = new Schema(
     units: { type: Number },
     productId: { type: String },
     video: { type: String },
-    amount: { type: String },
+    amount: { type: Number },
     isProfit: { type: Boolean },
     createdAt: { type: Date, default: Date.now },
   },
