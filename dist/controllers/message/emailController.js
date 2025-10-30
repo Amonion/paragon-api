@@ -14,7 +14,7 @@ const emailModel_1 = require("../../models/message/emailModel");
 const errorHandler_1 = require("../../utils/errorHandler");
 const query_1 = require("../../utils/query");
 const sendEmail_1 = require("../../utils/sendEmail");
-const user_1 = require("../../models/users/user");
+const userModel_1 = require("../../models/users/userModel");
 const createEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     (0, query_1.createItem)(req, res, emailModel_1.Email, 'Email was created successfully');
 });
@@ -49,7 +49,7 @@ const sendEmailToUsers = (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (!email) {
             return res.status(404).json({ message: 'Email template not found.' });
         }
-        const users = yield user_1.User.find({ _id: { $in: usersIds } });
+        const users = yield userModel_1.User.find({ _id: { $in: usersIds } });
         const failedUsers = [];
         for (const user of users) {
             try {

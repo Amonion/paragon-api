@@ -14,7 +14,8 @@ export interface IUser extends Document {
   phone: string
   picture: string
   username: string
-  staffPositions: string[]
+  staffPositions: string
+  salary: number
   staffRanking: number
   totalPurchase: number
   status: string
@@ -34,6 +35,7 @@ const UserSchema: Schema = new Schema(
     },
     isFirstTime: { type: Boolean, default: true },
     isTwoFactor: { type: Boolean, default: false },
+    isSuspended: { type: Boolean },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -45,8 +47,9 @@ const UserSchema: Schema = new Schema(
     phone: { type: String },
     picture: { type: String },
     username: { type: String },
-    staffPositions: { type: Array, default: [] },
+    staffPositions: { type: String },
     staffRanking: { type: Number },
+    salary: { type: Number, default: 0 },
     totalPurchase: { type: Number, default: 0 },
     status: { type: String, default: 'User' },
   },

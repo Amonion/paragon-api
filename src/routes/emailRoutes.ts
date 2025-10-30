@@ -8,11 +8,20 @@ import {
   updateEmail,
   deleteEmail,
   createEmail,
-} from '../../controllers/message/emailController'
+} from '../controllers/message/emailController'
+import {
+  createNotificationTemplate,
+  getNotificationTemplates,
+} from '../controllers/message/notificationTemplateController'
 
 const router = express.Router()
 
 router.route('/').get(getEmails).post(upload.any(), createEmail)
+
+router
+  .route('/templates')
+  .get(getNotificationTemplates)
+  .post(upload.any(), createNotificationTemplate)
 
 router
   .route('/:id')

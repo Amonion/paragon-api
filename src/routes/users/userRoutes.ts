@@ -13,6 +13,10 @@ import {
   createUser,
   getExistingUsername,
   searchAccounts,
+  updateUserStatus,
+  MakeUserStaff,
+  MakeStaffUser,
+  deleteUser,
 } from '../../controllers/users/userController'
 
 const router = express.Router()
@@ -23,6 +27,11 @@ router.route('/login').post(upload.any(), loginUser)
 router.route('/auth').get(getCurrentUser)
 
 router.route('/accounts').get(searchAccounts)
+router.route('/suspend').get(searchAccounts)
+router.route('/make-staff').patch(upload.any(), MakeUserStaff)
+router.route('/:id').patch(MakeStaffUser).delete(deleteUser)
+router.route('/staff').patch(upload.any(), updateUserStatus)
+
 router
   .route('/:username')
   .get(getAUser)

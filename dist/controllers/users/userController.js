@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExistingUsername = exports.deleteUser = exports.getUsers = exports.deleteMyData = exports.searchAccounts = exports.updateUser = exports.getAUser = exports.createUser = void 0;
+exports.getExistingUsername = exports.deleteUser = exports.getUsers = exports.deleteMyData = exports.MakeStaffUser = exports.MakeUserStaff = exports.searchAccounts = exports.updateUserStatus = exports.updateUser = exports.getAUser = exports.createUser = void 0;
 const errorHandler_1 = require("../../utils/errorHandler");
 const query_1 = require("../../utils/query");
 const fileUpload_1 = require("../../utils/fileUpload");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const sendEmail_1 = require("../../utils/sendEmail");
-const user_1 = require("../../models/users/user");
+const userModel_1 = require("../../models/users/userModel");
 const socialNotificationModel_1 = require("../../models/message/socialNotificationModel");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newUser = new user_1.User({
+        const newUser = new userModel_1.User({
             email: req.body.email,
             username: req.body.username,
             phone: req.body.phone,
@@ -42,7 +42,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createUser = createUser;
 const getAUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_1.User.findOne({ username: req.params.username });
+        const user = yield userModel_1.User.findOne({ username: req.params.username });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -60,7 +60,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        const user = yield user_1.User.findOneAndUpdate({ username: req.params.username }, req.body, {
+        const user = yield userModel_1.User.findOneAndUpdate({ username: req.params.username }, req.body, {
             new: true,
             runValidators: true,
         });
@@ -77,16 +77,61 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updateUser = updateUser;
+const updateUserStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        const result = yield (0, query_1.queryData)(userModel_1.User, req);
+        res.status(200).json({
+            message: 'The user has been updated successfully',
+            result,
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.updateUserStatus = updateUserStatus;
 const searchAccounts = (req, res) => {
-    return (0, query_1.search)(user_1.User, req, res);
+    return (0, query_1.search)(userModel_1.User, req, res);
 };
 exports.searchAccounts = searchAccounts;
+const MakeUserStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userModel_1.User.findByIdAndUpdate(req.body.id, { status: 'Staff' }, { new: true });
+        const result = yield (0, query_1.queryData)(userModel_1.User, req);
+        res.status(200).json({
+            message: 'The user has successfully been made staff.',
+            result,
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.MakeUserStaff = MakeUserStaff;
+const MakeStaffUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userModel_1.User.findByIdAndUpdate(req.params.id, req.body);
+        const result = yield (0, query_1.queryData)(userModel_1.User, req);
+        res.status(200).json({
+            message: 'The staff has been successfully made a user.',
+            result,
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.MakeStaffUser = MakeStaffUser;
 ///////////// NEW CONTROLLERS //////////////
 const deleteMyData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_1.User.findById(req.params.id);
+        const user = yield userModel_1.User.findById(req.params.id);
         yield socialNotificationModel_1.SocialNotification.deleteMany({ userId: req.params.id });
-        yield user_1.User.findByIdAndDelete(req.params.id);
+        yield userModel_1.User.findByIdAndDelete(req.params.id);
         return res
             .status(200)
             .json({ message: 'Your account has been deleted successfully.' });
@@ -98,7 +143,7 @@ const deleteMyData = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.deleteMyData = deleteMyData;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, query_1.queryData)(user_1.User, req);
+        const result = yield (0, query_1.queryData)(userModel_1.User, req);
         res.status(200).json(result);
     }
     catch (error) {
@@ -108,11 +153,12 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUsers = getUsers;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_1.User.findByIdAndDelete(req.params.id);
+        const user = yield userModel_1.User.findByIdAndDelete(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json({ message: 'User deleted successfully' });
+        const result = yield (0, query_1.queryData)(userModel_1.User, req);
+        res.status(200).json({ message: 'User deleted successfully', result });
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
@@ -122,7 +168,7 @@ exports.deleteUser = deleteUser;
 //-----------------INFO--------------------//
 const getExistingUsername = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_1.User.findOne({ username: req.params.username });
+        const user = yield userModel_1.User.findOne({ username: req.params.username });
         res.status(200).json(user);
     }
     catch (error) {

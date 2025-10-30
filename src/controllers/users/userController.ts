@@ -4,7 +4,7 @@ import { queryData, search } from '../../utils/query'
 import { uploadFilesToS3 } from '../../utils/fileUpload'
 import bcrypt from 'bcryptjs'
 import { sendEmail } from '../../utils/sendEmail'
-import { IUser, User } from '../../models/users/user'
+import { IUser, User } from '../../models/users/userModel'
 import { SocialNotification } from '../../models/message/socialNotificationModel'
 
 export const createUser = async (
@@ -75,10 +75,63 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 }
 
+export const updateUserStatus = async (req: Request, res: Response) => {
+  try {
+    await User.findOneAndUpdate({ username: req.body.username }, req.body, {
+      new: true,
+      runValidators: true,
+    })
+    const result = await queryData<IUser>(User, req)
+    res.status(200).json({
+      message: 'The user has been updated successfully',
+      result,
+    })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const searchAccounts = (req: Request, res: Response) => {
   return search(User, req, res)
 }
 
+export const MakeUserStaff = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    await User.findByIdAndUpdate(
+      req.body.id,
+      { status: 'Staff' },
+      { new: true }
+    )
+
+    const result = await queryData<IUser>(User, req)
+    res.status(200).json({
+      message: 'The user has successfully been made staff.',
+      result,
+    })
+  } catch (error: any) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const MakeStaffUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    await User.findByIdAndUpdate(req.params.id, req.body)
+
+    const result = await queryData<IUser>(User, req)
+    res.status(200).json({
+      message: 'The staff has been successfully made a user.',
+      result,
+    })
+  } catch (error: any) {
+    handleError(res, undefined, undefined, error)
+  }
+}
 ///////////// NEW CONTROLLERS //////////////
 export const deleteMyData = async (
   req: Request,
@@ -111,7 +164,8 @@ export const deleteUser = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
-    res.status(200).json({ message: 'User deleted successfully' })
+    const result = await queryData<IUser>(User, req)
+    res.status(200).json({ message: 'User deleted successfully', result })
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }

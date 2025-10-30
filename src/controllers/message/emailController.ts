@@ -3,7 +3,7 @@ import { Email, IEmail } from '../../models/message/emailModel'
 import { handleError } from '../../utils/errorHandler'
 import { queryData, createItem } from '../../utils/query'
 import { sendEmail } from '../../utils/sendEmail'
-import { User } from '../../models/users/user'
+import { User } from '../../models/users/userModel'
 
 export const createEmail = async (
   req: Request,

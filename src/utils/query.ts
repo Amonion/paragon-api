@@ -2,7 +2,7 @@ import { Model, FilterQuery } from 'mongoose'
 import { Request, Response } from 'express'
 import { deleteFilesFromS3, uploadFilesToS3 } from './fileUpload'
 import { handleError } from './errorHandler'
-import { User } from '../models/users/user'
+import { User } from '../models/users/userModel'
 
 export interface PaginationResult<T> {
   count: number // Total number of records

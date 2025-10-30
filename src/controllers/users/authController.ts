@@ -3,7 +3,7 @@ import { handleError } from '../../utils/errorHandler'
 import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { User } from '../../models/users/user'
+import { User } from '../../models/users/userModel'
 dotenv.config()
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
