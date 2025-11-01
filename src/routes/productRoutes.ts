@@ -9,6 +9,7 @@ import {
   getAProduct,
   getProducts,
   getProductStocks,
+  postProductStock,
   searchProducts,
   updateProduct,
   updateProductStock,
@@ -21,11 +22,11 @@ router.route('/search').get(searchProducts)
 router
   .route('/stocking')
   .get(getProductStocks)
-  .post(upload.any(), updateProductStock)
+  .post(upload.any(), postProductStock)
 router
   .route('/stocking/:id')
   .delete(deleteProductStocking)
-  .post(upload.any(), updateProductStock)
+  .patch(upload.any(), updateProductStock)
 
 router
   .route('/:id')

@@ -15,6 +15,10 @@ router
     .get(notificationTemplateController_1.getNotificationTemplates)
     .post(upload.any(), notificationTemplateController_1.createNotificationTemplate);
 router
+    .route('/templates/:id')
+    .get(notificationTemplateController_1.getNotificationTemplateById)
+    .patch(upload.any(), notificationTemplateController_1.updateNotificationTemplate);
+router
     .route('/:id')
     .get(emailController_1.getEmailById)
     .patch(upload.any(), emailController_1.updateEmail)

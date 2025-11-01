@@ -12,11 +12,11 @@ router.route('/search').get(productController_1.searchProducts);
 router
     .route('/stocking')
     .get(productController_1.getProductStocks)
-    .post(upload.any(), productController_1.updateProductStock);
+    .post(upload.any(), productController_1.postProductStock);
 router
     .route('/stocking/:id')
     .delete(productController_1.deleteProductStocking)
-    .post(upload.any(), productController_1.updateProductStock);
+    .patch(upload.any(), productController_1.updateProductStock);
 router
     .route('/:id')
     .get(productController_1.getAProduct)

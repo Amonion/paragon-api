@@ -11,6 +11,7 @@ import faqRoutes from './routes/faqRoutes'
 import emailRoutes from './routes/emailRoutes'
 import productRoutes from './routes/productRoutes'
 import reviewRoutes from './routes/reviewRoutes'
+import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 import { UsersSocket } from './routes/socket/usersSocket'
@@ -87,6 +88,7 @@ app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/emails', emailRoutes)
 app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
+app.use('/api/v1/transactions', transactionRoutes)
 app.use('/api/v1/users', userRoutes)
 
 app.use((req, res, next) => {

@@ -9,9 +9,150 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteItems = exports.deleteItem = exports.updateItem = exports.getItems = exports.getItemById = exports.createItem = exports.search = exports.generalSearchQuery = exports.queryData = void 0;
+exports.deleteItems = exports.deleteItem = exports.updateItem = exports.getItems = exports.getItemById = exports.createItem = exports.search = exports.generalSearchQuery = exports.queryData = exports.buildFilterQuery = void 0;
 const fileUpload_1 = require("./fileUpload");
 const errorHandler_1 = require("./errorHandler");
+// const buildFilterQuery = (req: Request): Record<string, any> => {
+//   const filters: Record<string, any> = {}
+//   const operators: Record<string, string> = {
+//     lt: '$lt',
+//     lte: '$lte',
+//     gt: '$gt',
+//     gte: '$gte',
+//     ne: '$ne',
+//     in: '$in',
+//     nin: '$nin',
+//   }
+//   const flattenQuery = (query: any): Record<string, any> => {
+//     const flat: Record<string, any> = {}
+//     for (const key in query) {
+//       const value = query[key]
+//       if (typeof value === 'object' && !Array.isArray(value)) {
+//         for (const subKey in value) {
+//           flat[`${key}[${subKey}]`] = value[subKey]
+//         }
+//       } else {
+//         flat[key] = value
+//       }
+//     }
+//     return flat
+//   }
+//   const flatQuery = flattenQuery(req.query)
+//   for (const [key, rawValue] of Object.entries(flatQuery)) {
+//     if (key === 'page' || key === 'page_size' || key === 'ordering') continue
+//     const match = key.match(/^(.+)\[(.+)\]$/)
+//     if (match) {
+//       const field = match[1]
+//       const op = match[2]
+//       if (operators[op]) {
+//         const mongoOp = operators[op]
+//         const value = Array.isArray(rawValue) ? rawValue : [rawValue]
+//         const finalValues = value.map((v) => {
+//           if (typeof v === 'string' && v.includes(',')) {
+//             return v.split(',').map((s) => s.trim())
+//           }
+//           if (v === 'true') return true
+//           if (v === 'false') return false
+//           if (!isNaN(Number(v))) return Number(v)
+//           return v
+//         })
+//         if (!filters[field]) filters[field] = {}
+//         filters[field][mongoOp] =
+//           finalValues.length === 1 ? finalValues[0] : finalValues.flat()
+//       }
+//     }
+//   }
+//   return filters
+// }
+// const buildFilterQuery = (req: Request): Record<string, any> => {
+//   const filters: Record<string, any> = {}
+//   const operators: Record<string, string> = {
+//     lt: '$lt',
+//     lte: '$lte',
+//     gt: '$gt',
+//     gte: '$gte',
+//     ne: '$ne',
+//     in: '$in',
+//     nin: '$nin',
+//   }
+//   // Flatten nested query params like ?price[gte]=100
+//   const flattenQuery = (query: any): Record<string, any> => {
+//     const flat: Record<string, any> = {}
+//     for (const key in query) {
+//       const value = query[key]
+//       if (typeof value === 'object' && !Array.isArray(value)) {
+//         for (const subKey in value) {
+//           flat[`${key}[${subKey}]`] = value[subKey]
+//         }
+//       } else {
+//         flat[key] = value
+//       }
+//     }
+//     return flat
+//   }
+//   const flatQuery = flattenQuery(req.query)
+//   // Handle standard filters (non-date)
+//   for (const [key, rawValue] of Object.entries(flatQuery)) {
+//     if (
+//       [
+//         'page',
+//         'page_size',
+//         'ordering',
+//         'period',
+//         'dateFrom',
+//         'dateTo',
+//       ].includes(key)
+//     )
+//       continue
+//     const match = key.match(/^(.+)\[(.+)\]$/)
+//     if (match) {
+//       const field = match[1]
+//       const op = match[2]
+//       if (operators[op]) {
+//         const mongoOp = operators[op]
+//         const value = Array.isArray(rawValue) ? rawValue : [rawValue]
+//         const finalValues = value.map((v) => {
+//           if (typeof v === 'string' && v.includes(',')) {
+//             return v.split(',').map((s) => s.trim())
+//           }
+//           if (v === 'true') return true
+//           if (v === 'false') return false
+//           if (!isNaN(Number(v))) return Number(v)
+//           return v
+//         })
+//         if (!filters[field]) filters[field] = {}
+//         filters[field][mongoOp] =
+//           finalValues.length === 1 ? finalValues[0] : finalValues.flat()
+//       }
+//     }
+//   }
+//   // --- Handle date range logic ---
+//   const { period, dateFrom, dateTo } = req.query
+//   if (period !== 'all') {
+//     const createdAtFilter: Record<string, any> = {}
+//     const from =
+//       dateFrom && dateFrom !== 'null' ? new Date(String(dateFrom)) : null
+//     const to = dateTo && dateTo !== 'null' ? new Date(String(dateTo)) : null
+//     // 1️⃣ Both dateFrom & dateTo exist → range filter
+//     if (from && to) {
+//       createdAtFilter.$gte = from
+//       createdAtFilter.$lte = to
+//     }
+//     // 2️⃣ Only dateFrom → from date to present
+//     else if (from && !to) {
+//       createdAtFilter.$gte = from
+//     }
+//     // 3️⃣ Only dateTo → anything before or equal to dateTo
+//     else if (!from && to) {
+//       createdAtFilter.$lte = to
+//     }
+//     // Only apply if any of the above are true
+//     if (Object.keys(createdAtFilter).length > 0) {
+//       filters.createdAt = createdAtFilter
+//     }
+//   }
+//   return filters
+// }
 const buildFilterQuery = (req) => {
     const filters = {};
     const operators = {
@@ -23,6 +164,7 @@ const buildFilterQuery = (req) => {
         in: '$in',
         nin: '$nin',
     };
+    // Flatten nested query params like ?price[gte]=100
     const flattenQuery = (query) => {
         const flat = {};
         for (const key in query) {
@@ -40,9 +182,18 @@ const buildFilterQuery = (req) => {
     };
     const flatQuery = flattenQuery(req.query);
     for (const [key, rawValue] of Object.entries(flatQuery)) {
-        if (key === 'page' || key === 'page_size' || key === 'ordering')
+        // Skip non-filter params
+        if ([
+            'page',
+            'page_size',
+            'ordering',
+            'period',
+            'dateFrom',
+            'dateTo',
+        ].includes(key))
             continue;
         const match = key.match(/^(.+)\[(.+)\]$/);
+        // Handle operator filters like ?price[gte]=100
         if (match) {
             const field = match[1];
             const op = match[2];
@@ -68,56 +219,40 @@ const buildFilterQuery = (req) => {
             }
         }
         else {
-            const value = Array.isArray(rawValue) ? rawValue : [rawValue];
-            const normalizedValue = value[0];
-            if (key === 'levelName' &&
-                !req.baseUrl.includes('/api/v1/courses') &&
-                !req.baseUrl.includes('/api/v1/questions')) {
-                const namesArray = normalizedValue
-                    .split(',')
-                    .map((name) => name.trim());
-                filters['levels.levelName'] = { $in: namesArray };
-            }
-            else if (key === 'usernames') {
-                const namesArray = normalizedValue
-                    .split(',')
-                    .map((name) => name.trim());
-                filters['username'] = { $in: namesArray };
-            }
-            else if (normalizedValue === '') {
-                filters[key] = { $exists: false };
-            }
-            else if (normalizedValue === 'true' || normalizedValue === 'false') {
-                filters[key] = normalizedValue === 'true';
-            }
-            else if (!isNaN(Number(normalizedValue))) {
-                filters[key] = Number(normalizedValue);
-            }
-            else if (typeof normalizedValue === 'string') {
-                if (key === 'username' && req.baseUrl.includes('/api/v1/posts')) {
-                    filters[key] = normalizedValue; // exact match
-                }
-                else if ((req.originalUrl.includes('/api/v1/notifications') ||
-                    req.originalUrl.includes('/api/v1/messages')) &&
-                    req.query.receiverUsername &&
-                    req.query.senderUsername) {
-                    // Only apply OR filter if BOTH are present
-                    filters['$or'] = [
-                        { receiverUsername: normalizedValue },
-                        { senderUsername: normalizedValue },
-                    ];
-                }
-                else {
-                    filters[key] = { $regex: normalizedValue, $options: 'i' }; // partial match
-                }
-            }
-            else {
-                filters[key] = normalizedValue;
-            }
+            // Handle simple equality filters like ?isBuyable=false or ?category=poultry
+            let value = rawValue;
+            if (value === 'true')
+                value = true;
+            else if (value === 'false')
+                value = false;
+            else if (!isNaN(Number(value)))
+                value = Number(value);
+            filters[key] = value;
+        }
+    }
+    // --- Handle date range logic ---
+    const { period, dateFrom, dateTo } = req.query;
+    if (period !== 'all') {
+        const createdAtFilter = {};
+        const from = dateFrom && dateFrom !== 'null' ? new Date(String(dateFrom)) : null;
+        const to = dateTo && dateTo !== 'null' ? new Date(String(dateTo)) : null;
+        if (from && to) {
+            createdAtFilter.$gte = from;
+            createdAtFilter.$lte = to;
+        }
+        else if (from && !to) {
+            createdAtFilter.$gte = from;
+        }
+        else if (!from && to) {
+            createdAtFilter.$lte = to;
+        }
+        if (Object.keys(createdAtFilter).length > 0) {
+            filters.createdAt = createdAtFilter;
         }
     }
     return filters;
 };
+exports.buildFilterQuery = buildFilterQuery;
 const buildSortingQuery = (req) => {
     const sort = {};
     if (req.query.ordering) {
@@ -131,10 +266,11 @@ const buildSortingQuery = (req) => {
     }
     return sort;
 };
+const MODELS_WITH_SUMMARY = ['Transaction', 'Stocking'];
 const queryData = (model, req) => __awaiter(void 0, void 0, void 0, function* () {
     const page_size = parseInt(req.query.page_size, 10) || 10;
     const page = parseInt(req.query.page, 10) || 1;
-    const filters = buildFilterQuery(req);
+    const filters = (0, exports.buildFilterQuery)(req);
     const sort = buildSortingQuery(req);
     const count = yield model.countDocuments(filters);
     const results = yield model
@@ -142,12 +278,51 @@ const queryData = (model, req) => __awaiter(void 0, void 0, void 0, function* ()
         .skip((page - 1) * page_size)
         .limit(page_size)
         .sort(sort);
-    const payload = {
-        count,
+    let summary;
+    if (MODELS_WITH_SUMMARY.includes(model.modelName)) {
+        const pipeline = [
+            { $match: filters },
+            {
+                $group: {
+                    _id: null,
+                    totalProfit: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$isProfit', true] },
+                                model.modelName === 'Transaction' ? '$totalAmount' : '$amount',
+                                0,
+                            ],
+                        },
+                    },
+                    totalLoss: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$isProfit', false] },
+                                model.modelName === 'Transaction' ? '$totalAmount' : '$amount',
+                                0,
+                            ],
+                        },
+                    },
+                    totalTransactions: { $sum: 1 },
+                },
+            },
+        ];
+        const aggResult = yield model.aggregate(pipeline);
+        if (aggResult && aggResult.length > 0) {
+            summary = aggResult[0];
+        }
+        else {
+            summary = {
+                totalProfit: 0,
+                totalLoss: 0,
+                totalTransactions: 0,
+            };
+        }
+    }
+    const payload = Object.assign({ count,
         results,
         page,
-        page_size,
-    };
+        page_size }, (summary ? { summary } : {}));
     return payload;
 });
 exports.queryData = queryData;
@@ -202,19 +377,6 @@ function buildSearchQuery(req) {
             });
         }
     };
-    applyInFilter('country');
-    applyInFilter('state');
-    applyInFilter('area');
-    applyInFilter('gender');
-    applyInFilter('currentSchoolCountry');
-    applyInFilter('currentSchoolName');
-    applyInFilter('currentAcademicLevelName');
-    applyInFilter('schoolCountry');
-    applyInFilter('schoolState');
-    applyInFilter('schoolArea');
-    applyInFilter('schoolLevelName');
-    applyInFilter('examCountries');
-    applyInFilter('examStates');
     applyInFilter('isVerified');
     applyInFilter('postType');
     applyInFilter('userType');
@@ -236,11 +398,8 @@ function buildSearchQuery(req) {
     const textFields = [
         'title',
         'name',
-        'instruction',
+        'fullName',
         'username',
-        'displayName',
-        'bioUserDisplayName',
-        'bioUserUsername',
         'firstName',
         'middleName',
         'content',

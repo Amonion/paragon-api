@@ -91,6 +91,34 @@ export const searchProducts = (req: Request, res: Response) => {
   return search(Product, req, res)
 }
 
+export const postProductStock = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const isProfit = req.body.isProfit === true || req.body.isProfit === 'true'
+    const units = Number(req.body.units)
+
+    if (isNaN(units)) {
+      res.status(400).json({ message: 'Invalid units value' })
+    }
+
+    await Product.findByIdAndUpdate(req.body.productId, {
+      $inc: { units: isProfit ? units : -units },
+    })
+
+    await Stocking.create(req.body)
+    const result = await queryData<IStocking>(Stocking, req)
+
+    res.status(200).json({
+      message: 'Product stock record has been created successfully',
+      result,
+    })
+  } catch (error: any) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const updateProductStock = async (
   req: Request,
   res: Response
@@ -138,6 +166,7 @@ export const deleteProductStocking = async (req: Request, res: Response) => {
 
 export const getProductStocks = async (req: Request, res: Response) => {
   try {
+    console.log(req.query)
     const result = await queryData<IStocking>(Stocking, req)
     res.status(200).json(result)
   } catch (error) {

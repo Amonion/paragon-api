@@ -33,37 +33,20 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stocking = exports.Product = void 0;
+exports.Transaction = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const ProductSchema = new mongoose_1.Schema({
-    description: { type: String },
-    name: { type: String },
-    purchaseUnit: { type: String },
-    seoTitle: { type: String },
+const TransactionSchema = new mongoose_1.Schema({
+    fullName: { type: String },
+    username: { type: String },
     picture: { type: String },
-    units: { type: Number },
-    unitPerPurchase: { type: Number, default: 1 },
-    price: { type: Number },
-    discount: { type: Number },
-    costPrice: { type: Number },
-    isBuyable: { type: Boolean, default: false },
+    payment: { type: String },
+    totalAmount: { type: Number },
+    nature: { type: String },
+    status: { type: Boolean },
+    isProfit: { type: Boolean, default: false },
+    cartProducts: { type: Array },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Product = mongoose_1.default.model('Product', ProductSchema);
-const StockingSchema = new mongoose_1.Schema({
-    staffName: { type: String },
-    name: { type: String },
-    picture: { type: String },
-    reason: { type: String },
-    units: { type: Number },
-    productId: { type: String },
-    video: { type: String },
-    amount: { type: Number },
-    isProfit: { type: Boolean },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Stocking = mongoose_1.default.model('Stocking', StockingSchema);
+exports.Transaction = mongoose_1.default.model('Transaction', TransactionSchema);

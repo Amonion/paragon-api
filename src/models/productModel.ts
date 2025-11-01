@@ -27,6 +27,7 @@ const ProductSchema: Schema = new Schema(
     price: { type: Number },
     discount: { type: Number },
     costPrice: { type: Number },
+    isBuyable: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
   },
   {

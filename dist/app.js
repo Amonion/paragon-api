@@ -26,6 +26,7 @@ const faqRoutes_1 = __importDefault(require("./routes/faqRoutes"));
 const emailRoutes_1 = __importDefault(require("./routes/emailRoutes"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const reviewRoutes_1 = __importDefault(require("./routes/reviewRoutes"));
+const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 const usersSocket_1 = require("./routes/socket/usersSocket");
@@ -87,6 +88,7 @@ app.use('/api/v1/faqs', faqRoutes_1.default);
 app.use('/api/v1/emails', emailRoutes_1.default);
 app.use('/api/v1/products', productRoutes_1.default);
 app.use('/api/v1/reviews', reviewRoutes_1.default);
+app.use('/api/v1/transactions', transactionRoutes_1.default);
 app.use('/api/v1/users', userRoutes_1.default);
 app.use((req, res, next) => {
     (0, errorHandler_1.handleError)(res, 404, `Request not found: ${req.method} ${req.originalUrl}`);

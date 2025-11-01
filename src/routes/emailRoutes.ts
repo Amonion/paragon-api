@@ -11,7 +11,9 @@ import {
 } from '../controllers/message/emailController'
 import {
   createNotificationTemplate,
+  getNotificationTemplateById,
   getNotificationTemplates,
+  updateNotificationTemplate,
 } from '../controllers/message/notificationTemplateController'
 
 const router = express.Router()
@@ -22,6 +24,11 @@ router
   .route('/templates')
   .get(getNotificationTemplates)
   .post(upload.any(), createNotificationTemplate)
+
+router
+  .route('/templates/:id')
+  .get(getNotificationTemplateById)
+  .patch(upload.any(), updateNotificationTemplate)
 
 router
   .route('/:id')

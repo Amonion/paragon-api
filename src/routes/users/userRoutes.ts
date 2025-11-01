@@ -26,7 +26,7 @@ router.route('/login').post(upload.any(), loginUser)
 
 router.route('/auth').get(getCurrentUser)
 
-router.route('/accounts').get(searchAccounts)
+router.route('/search').get(searchAccounts)
 router.route('/suspend').get(searchAccounts)
 router.route('/make-staff').patch(upload.any(), MakeUserStaff)
 router.route('/:id').patch(MakeStaffUser).delete(deleteUser)
