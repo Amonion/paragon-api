@@ -16,12 +16,12 @@ router.route('/auth').get(authController_1.getCurrentUser);
 router.route('/search').get(userController_1.searchAccounts);
 router.route('/suspend').get(userController_1.searchAccounts);
 router.route('/make-staff').patch(upload.any(), userController_1.MakeUserStaff);
-router.route('/:id').patch(userController_1.MakeStaffUser).delete(userController_1.deleteUser);
 router.route('/staff').patch(upload.any(), userController_1.updateUserStatus);
 router
     .route('/:username')
     .get(userController_1.getAUser)
     .patch(upload.any(), userController_1.updateUser)
     .post(upload.any(), authController_1.updatePassword);
+router.route('/:id').patch(userController_1.MakeStaffUser).delete(userController_1.deleteUser);
 router.route('/').get(userController_1.getUsers).post(upload.any(), userController_1.createUser);
 exports.default = router;

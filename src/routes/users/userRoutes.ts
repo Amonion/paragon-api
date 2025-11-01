@@ -29,7 +29,6 @@ router.route('/auth').get(getCurrentUser)
 router.route('/search').get(searchAccounts)
 router.route('/suspend').get(searchAccounts)
 router.route('/make-staff').patch(upload.any(), MakeUserStaff)
-router.route('/:id').patch(MakeStaffUser).delete(deleteUser)
 router.route('/staff').patch(upload.any(), updateUserStatus)
 
 router
@@ -37,6 +36,8 @@ router
   .get(getAUser)
   .patch(upload.any(), updateUser)
   .post(upload.any(), updatePassword)
+
+router.route('/:id').patch(MakeStaffUser).delete(deleteUser)
 router.route('/').get(getUsers).post(upload.any(), createUser)
 
 export default router
