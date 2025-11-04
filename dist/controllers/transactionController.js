@@ -15,6 +15,7 @@ const errorHandler_1 = require("../utils/errorHandler");
 const transactionModel_1 = require("../models/transactionModel");
 const productModel_1 = require("../models/productModel");
 const fileUpload_1 = require("../utils/fileUpload");
+const userModel_1 = require("../models/users/userModel");
 const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cartProducts = req.body.cartProducts;
@@ -100,6 +101,9 @@ const CreateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }));
         yield productModel_1.Product.bulkWrite(bulkOps);
         yield transactionModel_1.Transaction.create(req.body);
+        yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, {
+            $inc: { totalPurchase: req.body.totalAmount },
+        });
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json({
             message: 'The transaction has been created successfully.',

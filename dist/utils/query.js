@@ -379,7 +379,7 @@ function buildSearchQuery(req) {
     };
     applyInFilter('isVerified');
     applyInFilter('postType');
-    applyInFilter('userType');
+    applyInFilter('status');
     if (cleanedQuery.publishedAt) {
         let [startDate, endDate] = cleanedQuery.publishedAt.split(',');
         if (!startDate || startDate === 'undefined')
@@ -403,6 +403,7 @@ function buildSearchQuery(req) {
         'firstName',
         'middleName',
         'content',
+        'description',
         'author',
         'lastName',
         'subtitle',

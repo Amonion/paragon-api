@@ -451,7 +451,7 @@ function buildSearchQuery<T>(req: any): FilterQuery<T> {
 
   applyInFilter('isVerified')
   applyInFilter('postType')
-  applyInFilter('userType')
+  applyInFilter('status')
 
   if (cleanedQuery.publishedAt) {
     let [startDate, endDate] = cleanedQuery.publishedAt.split(',')
@@ -476,6 +476,7 @@ function buildSearchQuery<T>(req: any): FilterQuery<T> {
     'firstName',
     'middleName',
     'content',
+    'description',
     'author',
     'lastName',
     'subtitle',

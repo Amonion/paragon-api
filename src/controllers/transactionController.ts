@@ -4,6 +4,7 @@ import { handleError } from '../utils/errorHandler'
 import { ITransaction, Transaction } from '../models/transactionModel'
 import { IProduct, Product } from '../models/productModel'
 import { uploadFilesToS3 } from '../utils/fileUpload'
+import { User } from '../models/users/userModel'
 
 export const purchaseProducts = async (req: Request, res: Response) => {
   try {
@@ -112,6 +113,12 @@ export const CreateTrasanction = async (req: Request, res: Response) => {
 
     await Product.bulkWrite(bulkOps)
     await Transaction.create(req.body)
+    await User.findOneAndUpdate(
+      { username: req.body.username },
+      {
+        $inc: { totalPurchase: req.body.totalAmount },
+      }
+    )
 
     const result = await queryData<IProduct>(Product, req)
     res.status(200).json({
