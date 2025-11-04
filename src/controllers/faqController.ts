@@ -53,10 +53,11 @@ export const updateFaq = async (req: Request, res: Response) => {
     if (!faq) {
       return res.status(404).json({ message: 'faq not found' })
     }
+    const result = await queryData<IFaq>(Faq, req)
 
     res.status(200).json({
       message: 'The faq is updated successfully',
-      data: faq,
+      result,
     })
   } catch (error) {
     handleError(res, undefined, undefined, error)

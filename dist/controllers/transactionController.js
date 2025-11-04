@@ -14,6 +14,7 @@ const query_1 = require("../utils/query");
 const errorHandler_1 = require("../utils/errorHandler");
 const transactionModel_1 = require("../models/transactionModel");
 const productModel_1 = require("../models/productModel");
+const fileUpload_1 = require("../utils/fileUpload");
 const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cartProducts = req.body.cartProducts;
@@ -51,7 +52,14 @@ const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.purchaseProducts = purchaseProducts;
 const CreateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cartProducts = req.body.cartProducts;
+        const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
+        uploadedFiles.forEach((file) => {
+            req.body[file.fieldName] = file.s3Url;
+        });
+        const cartProducts = JSON.parse(req.body.cartProducts);
+        req.body.status = JSON.parse(req.body.status);
+        req.body.isProfit = JSON.parse(req.body.isProfit);
+        req.body.partPayment = JSON.parse(req.body.partPayment);
         if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
             return res.status(400).json({ message: 'Cart is empty' });
         }

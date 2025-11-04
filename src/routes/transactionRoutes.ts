@@ -11,7 +11,7 @@ const upload = multer()
 
 const router = express.Router()
 
-router.route('/').get(getTransactions).post(CreateTrasanction)
+router.route('/').get(getTransactions).post(upload.any(), CreateTrasanction)
 router.route('/purchase').post(purchaseProducts)
 router.route('/barchart').get(GetTransactionSummary)
 router.route('/:id').patch(upload.any(), updateTransaction)

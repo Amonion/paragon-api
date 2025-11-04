@@ -59,9 +59,10 @@ const updateFaq = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!faq) {
             return res.status(404).json({ message: 'faq not found' });
         }
+        const result = yield (0, query_1.queryData)(faqModel_1.Faq, req);
         res.status(200).json({
             message: 'The faq is updated successfully',
-            data: faq,
+            result,
         });
     }
     catch (error) {

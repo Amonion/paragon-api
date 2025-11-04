@@ -17,6 +17,8 @@ const TransactionSchema: Schema = new Schema(
     picture: { type: String },
     payment: { type: String },
     totalAmount: { type: Number },
+    partPayment: { type: Number },
+    receipt: { type: String },
     nature: { type: String },
     status: { type: Boolean },
     isProfit: { type: Boolean, default: false },

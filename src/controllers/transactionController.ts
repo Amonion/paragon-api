@@ -3,6 +3,7 @@ import { queryData } from '../utils/query'
 import { handleError } from '../utils/errorHandler'
 import { ITransaction, Transaction } from '../models/transactionModel'
 import { IProduct, Product } from '../models/productModel'
+import { uploadFilesToS3 } from '../utils/fileUpload'
 
 export const purchaseProducts = async (req: Request, res: Response) => {
   try {
@@ -50,7 +51,14 @@ export const purchaseProducts = async (req: Request, res: Response) => {
 
 export const CreateTrasanction = async (req: Request, res: Response) => {
   try {
-    const cartProducts = req.body.cartProducts
+    const uploadedFiles = await uploadFilesToS3(req)
+    uploadedFiles.forEach((file) => {
+      req.body[file.fieldName] = file.s3Url
+    })
+    const cartProducts = JSON.parse(req.body.cartProducts)
+    req.body.status = JSON.parse(req.body.status)
+    req.body.isProfit = JSON.parse(req.body.isProfit)
+    req.body.partPayment = JSON.parse(req.body.partPayment)
 
     if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
       return res.status(400).json({ message: 'Cart is empty' })
