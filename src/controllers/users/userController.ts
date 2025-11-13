@@ -5,7 +5,6 @@ import { uploadFilesToS3 } from '../../utils/fileUpload'
 import bcrypt from 'bcryptjs'
 import { sendEmail } from '../../utils/sendEmail'
 import { IUser, User } from '../../models/users/userModel'
-import { SocialNotification } from '../../models/message/socialNotificationModel'
 
 export const createUser = async (
   req: Request,
@@ -139,7 +138,6 @@ export const deleteMyData = async (
 ): Promise<Response | void> => {
   try {
     const user = await User.findById(req.params.id)
-    await SocialNotification.deleteMany({ userId: req.params.id })
     await User.findByIdAndDelete(req.params.id)
     return res
       .status(200)

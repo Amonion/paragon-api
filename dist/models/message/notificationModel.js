@@ -33,17 +33,16 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Email = void 0;
+exports.Notification = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const EmailSchema = new mongoose_1.Schema({
+const NotificationSchema = new mongoose_1.Schema({
     content: { type: String },
-    sendable: { type: Boolean, default: false },
+    unread: { type: Boolean, default: true },
     title: { type: String },
-    name: { type: String },
-    picture: { type: String },
+    username: { type: String },
     greetings: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Email = mongoose_1.default.model('Email', EmailSchema);
+exports.Notification = mongoose_1.default.model('Notification', NotificationSchema);

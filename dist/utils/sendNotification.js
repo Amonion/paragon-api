@@ -9,50 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendPersonalNotification = exports.sendSocialNotification = void 0;
-const personalNotificationModel_1 = require("../models/message/personalNotificationModel");
+exports.sendNotification = void 0;
+const notificationModel_1 = require("../models/message/notificationModel");
 const notificationTemplateModel_1 = require("../models/message/notificationTemplateModel");
-const socialNotificationModel_1 = require("../models/message/socialNotificationModel");
-const sendSocialNotification = (templateName, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const notificationTemp = yield notificationTemplateModel_1.NotificationTemplate.findOne({
-        name: templateName,
-    });
-    if (!notificationTemp) {
-        throw new Error(`Notification template '${templateName}' not found.`);
-    }
-    const click_here = templateName === 'friend_request'
-        ? `<a href="/home/chat/${data.from}/${data.senderUsername}" class="text-[var(--custom)]">click here</a>`
-        : '';
-    const content = notificationTemp.content
-        .replace('{{receiver_name}}', data.receiverName)
-        .replace('{{receiverer_username}}', data.receiverUsername)
-        .replace('{{sender_username}}', data.senderUsername)
-        .replace('{{sender_name}}', data.senderName)
-        .replace('{{gender}}', data.gender)
-        .replace('{{school}}', data.str1)
-        .replace('{{click_here}}', click_here)
-        .replace('{{content}}', data.content);
-    const socialNotification = yield socialNotificationModel_1.SocialNotification.create({
-        greetings: notificationTemp.greetings,
-        name: notificationTemp.name,
-        title: notificationTemp.title,
-        senderUsername: data.senderUsername,
-        receiverUsername: data.receiverUsername,
-        senderName: data.senderName,
-        receiverName: data.receiverName,
-        senderPicture: data.senderPicture,
-        unread: true,
-        receiverPicture: data.receiverPicture,
-        content,
-    });
-    const unreadNotifications = yield socialNotificationModel_1.SocialNotification.countDocuments({
-        receiverUsername: data.receiverUsername,
-        unread: true,
-    });
-    return { socialNotification, unreadNotifications };
-});
-exports.sendSocialNotification = sendSocialNotification;
-const sendPersonalNotification = (templateName, data) => __awaiter(void 0, void 0, void 0, function* () {
+const sendNotification = (templateName, data) => __awaiter(void 0, void 0, void 0, function* () {
     const notificationTemp = yield notificationTemplateModel_1.NotificationTemplate.findOne({
         name: templateName,
     });
@@ -66,7 +26,7 @@ const sendPersonalNotification = (templateName, data) => __awaiter(void 0, void 
         .replace('{{sender_username}}', data.senderUsername)
         .replace('{{school}}', data.str1)
         .replace('{{click_here}}', click_here);
-    const notification = yield personalNotificationModel_1.PersonalNotification.create({
+    const notification = yield notificationModel_1.Notification.create({
         greetings: notificationTemp.greetings,
         name: notificationTemp.name,
         title: notificationTemp.title,
@@ -78,10 +38,10 @@ const sendPersonalNotification = (templateName, data) => __awaiter(void 0, void 
         receiverPicture: data.receiverPicture,
         content,
     });
-    const count = yield personalNotificationModel_1.PersonalNotification.countDocuments({
+    const count = yield notificationModel_1.Notification.countDocuments({
         receiverUsername: data.receiverUsername,
         unread: true,
     });
-    return { personalNotification: notification, count };
+    return { Notification: notification, count };
 });
-exports.sendPersonalNotification = sendPersonalNotification;
+exports.sendNotification = sendNotification;

@@ -6,18 +6,17 @@ export interface IEmail extends Document {
   title: string
   greetings: string
   name: string
-  note: string
   createdAt: Date
 }
 
 const EmailSchema: Schema = new Schema(
   {
-    content: { type: String, default: '' },
+    content: { type: String },
+    sendable: { type: Boolean, default: false },
     title: { type: String },
-    name: { type: String, default: '' },
-    picture: { type: String, default: '' },
-    greetings: { type: String, default: '' },
-    note: { type: String, default: '' },
+    name: { type: String },
+    picture: { type: String },
+    greetings: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
   {

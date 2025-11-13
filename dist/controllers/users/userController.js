@@ -19,7 +19,6 @@ const fileUpload_1 = require("../../utils/fileUpload");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const sendEmail_1 = require("../../utils/sendEmail");
 const userModel_1 = require("../../models/users/userModel");
-const socialNotificationModel_1 = require("../../models/message/socialNotificationModel");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newUser = new userModel_1.User({
@@ -130,7 +129,6 @@ exports.MakeStaffUser = MakeStaffUser;
 const deleteMyData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield userModel_1.User.findById(req.params.id);
-        yield socialNotificationModel_1.SocialNotification.deleteMany({ userId: req.params.id });
         yield userModel_1.User.findByIdAndDelete(req.params.id);
         return res
             .status(200)

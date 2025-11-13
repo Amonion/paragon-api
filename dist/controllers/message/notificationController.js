@@ -9,18 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendPushNotification = exports.readSocialNotifications = exports.getSocialNotification = exports.getSocialNotifications = exports.readPersonalNotifications = exports.getPersonalNotification = exports.getPersonalNotifications = void 0;
+exports.readNotifications = exports.getNotification = exports.getNotifications = void 0;
 const errorHandler_1 = require("../../utils/errorHandler");
-const expo_server_sdk_1 = require("expo-server-sdk");
-const personalNotificationModel_1 = require("../../models/message/personalNotificationModel");
-const notificationTemplateModel_1 = require("../../models/message/notificationTemplateModel");
+const notificationModel_1 = require("../../models/message/notificationModel");
 const query_1 = require("../../utils/query");
-const socialNotificationModel_1 = require("../../models/message/socialNotificationModel");
-const expo = new expo_server_sdk_1.Expo();
-const getPersonalNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, query_1.queryData)(personalNotificationModel_1.PersonalNotification, req);
-        const unread = yield personalNotificationModel_1.PersonalNotification.countDocuments({
+        const result = yield (0, query_1.queryData)(notificationModel_1.Notification, req);
+        const unread = yield notificationModel_1.Notification.countDocuments({
             receiverUsername: req.query.receiverUsername,
             unread: true,
         });
@@ -36,23 +32,23 @@ const getPersonalNotifications = (req, res) => __awaiter(void 0, void 0, void 0,
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.getPersonalNotifications = getPersonalNotifications;
-const getPersonalNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getNotifications = getNotifications;
+const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield personalNotificationModel_1.PersonalNotification.findById(req.params.id);
+        const result = yield notificationModel_1.Notification.findById(req.params.id);
         res.status(200).json({ data: result });
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.getPersonalNotification = getPersonalNotification;
-const readPersonalNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getNotification = getNotification;
+const readNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ids = JSON.parse(req.body.ids);
         const username = req.query.username;
-        yield personalNotificationModel_1.PersonalNotification.updateMany({ _id: { $in: ids } }, { $set: { unread: false } });
-        const unread = yield personalNotificationModel_1.PersonalNotification.countDocuments({
+        yield notificationModel_1.Notification.updateMany({ _id: { $in: ids } }, { $set: { unread: false } });
+        const unread = yield notificationModel_1.Notification.countDocuments({
             receiverUsername: username,
             unread: true,
         });
@@ -64,75 +60,4 @@ const readPersonalNotifications = (req, res) => __awaiter(void 0, void 0, void 0
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.readPersonalNotifications = readPersonalNotifications;
-const getSocialNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield (0, query_1.queryData)(socialNotificationModel_1.SocialNotification, req);
-        const unreadSocials = yield socialNotificationModel_1.SocialNotification.countDocuments({
-            receiverUsername: req.query.receiverUsername,
-            unread: true,
-        });
-        res.status(200).json({
-            page: result.page,
-            results: result.results,
-            count: result.count,
-            unreadSocials,
-        });
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.getSocialNotifications = getSocialNotifications;
-const getSocialNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield socialNotificationModel_1.SocialNotification.findById(req.params.id);
-        res.status(200).json({ data: result });
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.getSocialNotification = getSocialNotification;
-const readSocialNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const ids = JSON.parse(req.body.ids);
-        const username = req.query.username;
-        yield socialNotificationModel_1.SocialNotification.updateMany({ _id: { $in: ids } }, { $set: { unread: false } });
-        const unread = yield socialNotificationModel_1.SocialNotification.countDocuments({
-            receiverUsername: username,
-            unread: true,
-        });
-        res.status(200).json({
-            unread: unread,
-        });
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.readSocialNotifications = readSocialNotifications;
-const sendPushNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { notificationId, token } = req.body;
-    // const user = await UserInfo.findById(userId)
-    const item = yield notificationTemplateModel_1.NotificationTemplate.findById(notificationId);
-    const cleanContent = (_a = item === null || item === void 0 ? void 0 : item.content) === null || _a === void 0 ? void 0 : _a.replace(/<[^>]*>?/gm, '').trim();
-    const messages = [
-        {
-            to: token,
-            sound: 'default',
-            title: item === null || item === void 0 ? void 0 : item.title,
-            body: cleanContent,
-            data: { type: 'notifications', screen: '/home/notifications' },
-        },
-    ];
-    try {
-        yield expo.sendPushNotificationsAsync(messages);
-        res.send({ success: true });
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.sendPushNotification = sendPushNotification;
+exports.readNotifications = readNotifications;

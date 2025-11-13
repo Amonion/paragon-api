@@ -3,24 +3,15 @@ import multer from 'multer'
 const upload = multer()
 
 import {
-  getEmailById,
-  getEmails,
-  updateEmail,
-  deleteEmail,
-  createEmail,
-  sendEmailToUsers,
-} from '../controllers/message/emailController'
-import {
   createNotificationTemplate,
+  deleteNotificationTemplate,
   getNotificationTemplateById,
   getNotificationTemplates,
   updateNotificationTemplate,
 } from '../controllers/message/notificationTemplateController'
+import { getNotifications } from '../controllers/message/notificationController'
 
 const router = express.Router()
-
-router.route('/').get(getEmails).post(upload.any(), createEmail)
-router.route('/send/:id').post(upload.any(), sendEmailToUsers)
 
 router
   .route('/templates')
@@ -31,11 +22,9 @@ router
   .route('/templates/:id')
   .get(getNotificationTemplateById)
   .patch(upload.any(), updateNotificationTemplate)
+  .delete(deleteNotificationTemplate)
 
-router
-  .route('/:id')
-  .get(getEmailById)
-  .patch(upload.any(), updateEmail)
-  .delete(deleteEmail)
+router.route('/').get(getNotifications)
+router.route('/:id').patch(upload.any(), updateNotificationTemplate)
 
 export default router
