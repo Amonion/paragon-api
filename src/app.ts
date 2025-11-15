@@ -8,6 +8,7 @@ import { handleError } from './utils/errorHandler'
 import blogRoutes from './routes/blogRoutes'
 import companyRoutes from './routes/companyRoutes'
 import faqRoutes from './routes/faqRoutes'
+import serviceRoutes from './routes/serviceRoutes'
 import emailRoutes from './routes/emailRoutes'
 import notificationRoutes from './routes/notificationRoutes'
 import productRoutes from './routes/productRoutes'
@@ -86,6 +87,7 @@ app.use(bodyParser.json())
 app.use('/api/v1/blogs', blogRoutes)
 app.use('/api/v1/company', companyRoutes)
 app.use('/api/v1/faqs', faqRoutes)
+app.use('/api/v1/services', serviceRoutes)
 app.use('/api/v1/emails', emailRoutes)
 app.use('/api/v1/notifications', notificationRoutes)
 app.use('/api/v1/products', productRoutes)

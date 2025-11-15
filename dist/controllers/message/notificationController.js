@@ -36,7 +36,8 @@ exports.getNotifications = getNotifications;
 const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield notificationModel_1.Notification.findById(req.params.id);
-        res.status(200).json({ data: result });
+        const unread = yield notificationModel_1.Notification.countDocuments({ unread: true });
+        res.status(200).json({ data: result, unread });
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
@@ -45,11 +46,10 @@ const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getNotification = getNotification;
 const readNotifications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const ids = JSON.parse(req.body.ids);
-        const username = req.query.username;
+        const ids = req.body.ids;
+        console.log(ids);
         yield notificationModel_1.Notification.updateMany({ _id: { $in: ids } }, { $set: { unread: false } });
         const unread = yield notificationModel_1.Notification.countDocuments({
-            receiverUsername: username,
             unread: true,
         });
         res.status(200).json({

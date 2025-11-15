@@ -29,7 +29,8 @@ export const getNotifications = async (req: Request, res: Response) => {
 export const getNotification = async (req: Request, res: Response) => {
   try {
     const result = await Notification.findById(req.params.id)
-    res.status(200).json({ data: result })
+    const unread = await Notification.countDocuments({ unread: true })
+    res.status(200).json({ data: result, unread })
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }
@@ -37,15 +38,14 @@ export const getNotification = async (req: Request, res: Response) => {
 
 export const readNotifications = async (req: Request, res: Response) => {
   try {
-    const ids = JSON.parse(req.body.ids)
-    const username = req.query.username
+    const ids = req.body.ids
+    console.log(ids)
     await Notification.updateMany(
       { _id: { $in: ids } },
       { $set: { unread: false } }
     )
 
     const unread = await Notification.countDocuments({
-      receiverUsername: username,
       unread: true,
     })
     res.status(200).json({

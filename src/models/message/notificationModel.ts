@@ -16,6 +16,8 @@ const NotificationSchema: Schema = new Schema(
     title: { type: String },
     username: { type: String },
     greetings: { type: String },
+    fullName: { type: String },
+    picture: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
   {

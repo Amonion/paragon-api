@@ -9,13 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetTransactionSummary = exports.updateTransaction = exports.getTransactions = exports.CreateTrasanction = exports.purchaseProducts = void 0;
+exports.GetTransactionSummary = exports.updateTransaction = exports.getTransactions = exports.createTrasanction = exports.updateTrasanction = exports.purchaseProducts = void 0;
 const query_1 = require("../utils/query");
 const errorHandler_1 = require("../utils/errorHandler");
 const transactionModel_1 = require("../models/transactionModel");
 const productModel_1 = require("../models/productModel");
 const fileUpload_1 = require("../utils/fileUpload");
 const userModel_1 = require("../models/users/userModel");
+const sendNotification_1 = require("../utils/sendNotification");
 const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cartProducts = req.body.cartProducts;
@@ -51,13 +52,14 @@ const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.purchaseProducts = purchaseProducts;
-const CreateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
         const cartProducts = JSON.parse(req.body.cartProducts);
+        req.body.cartProducts = JSON.parse(req.body.cartProducts);
         req.body.status = JSON.parse(req.body.status);
         req.body.isProfit = JSON.parse(req.body.isProfit);
         req.body.partPayment = JSON.parse(req.body.partPayment);
@@ -100,21 +102,104 @@ const CreateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
             },
         }));
         yield productModel_1.Product.bulkWrite(bulkOps);
-        yield transactionModel_1.Transaction.create(req.body);
-        yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, {
+        const transaction = yield transactionModel_1.Transaction.create(req.body);
+        const user = yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, {
             $inc: { totalPurchase: req.body.totalAmount },
         });
+        let notificationResult = null;
+        if (req.body.partPayment) {
+            notificationResult = yield (0, sendNotification_1.sendNotification)('credit', {
+                user,
+                transaction,
+            });
+        }
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json({
             message: 'The transaction has been created successfully.',
             result,
+            transaction,
+            notificationResult,
         });
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.CreateTrasanction = CreateTrasanction;
+exports.updateTrasanction = updateTrasanction;
+const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
+        uploadedFiles.forEach((file) => {
+            req.body[file.fieldName] = file.s3Url;
+        });
+        const cartProducts = JSON.parse(req.body.cartProducts);
+        req.body.cartProducts = JSON.parse(req.body.cartProducts);
+        req.body.status = JSON.parse(req.body.status);
+        req.body.isProfit = JSON.parse(req.body.isProfit);
+        req.body.partPayment = JSON.parse(req.body.partPayment);
+        if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty' });
+        }
+        const productIds = cartProducts.map((p) => p._id);
+        const dbProducts = yield productModel_1.Product.find({ _id: { $in: productIds } });
+        if (dbProducts.length !== productIds.length) {
+            const missingIds = productIds.filter((id) => !dbProducts.find((p) => p._id.toString() === id.toString()));
+            return res.status(404).json({
+                message: `Some products were not found: ${missingIds.join(', ')}`,
+            });
+        }
+        const outOfStock = [];
+        for (const cartItem of cartProducts) {
+            const product = dbProducts.find((p) => p._id.toString() === cartItem._id.toString());
+            if (!product)
+                continue;
+            if (product.units < cartItem.cartUnits * cartItem.unitPerPurchase) {
+                outOfStock.push({
+                    name: product.name,
+                    available: product.units,
+                    requested: cartItem.cartUnits,
+                });
+            }
+        }
+        if (outOfStock.length > 0) {
+            return res.status(400).json({
+                message: 'Some items are out of stock. Please adjust your order and try again.',
+                outOfStock,
+            });
+        }
+        const bulkOps = cartProducts.map((cartItem) => ({
+            updateOne: {
+                filter: { _id: cartItem._id },
+                update: {
+                    $inc: { units: -cartItem.cartUnits * cartItem.unitPerPurchase },
+                },
+            },
+        }));
+        yield productModel_1.Product.bulkWrite(bulkOps);
+        const transaction = yield transactionModel_1.Transaction.create(req.body);
+        const user = yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, {
+            $inc: { totalPurchase: req.body.totalAmount },
+        });
+        let notificationResult = null;
+        if (req.body.partPayment) {
+            notificationResult = yield (0, sendNotification_1.sendNotification)('credit', {
+                user,
+                transaction,
+            });
+        }
+        const result = yield (0, query_1.queryData)(productModel_1.Product, req);
+        res.status(200).json({
+            message: 'The transaction has been created successfully.',
+            result,
+            transaction,
+            notificationResult,
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.createTrasanction = createTrasanction;
 const getTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, query_1.queryData)(transactionModel_1.Transaction, req);

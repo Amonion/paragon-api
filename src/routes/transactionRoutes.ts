@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import {
-  CreateTrasanction,
+  createTrasanction,
   getTransactions,
   GetTransactionSummary,
   purchaseProducts,
@@ -11,7 +11,7 @@ const upload = multer()
 
 const router = express.Router()
 
-router.route('/').get(getTransactions).post(upload.any(), CreateTrasanction)
+router.route('/').get(getTransactions).post(upload.any(), createTrasanction)
 router.route('/purchase').post(purchaseProducts)
 router.route('/barchart').get(GetTransactionSummary)
 router.route('/:id').patch(upload.any(), updateTransaction)

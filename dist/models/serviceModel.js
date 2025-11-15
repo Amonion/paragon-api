@@ -33,18 +33,16 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Notification = void 0;
+exports.Service = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const NotificationSchema = new mongoose_1.Schema({
-    content: { type: String },
-    unread: { type: Boolean, default: true },
+const ServiceSchema = new mongoose_1.Schema({
+    description: { type: String },
+    staffName: { type: String },
     title: { type: String },
+    video: { type: String },
     username: { type: String },
-    greetings: { type: String },
-    fullName: { type: String },
-    picture: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Notification = mongoose_1.default.model('Notification', NotificationSchema);
+exports.Service = mongoose_1.default.model('Service', ServiceSchema);

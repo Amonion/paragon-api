@@ -5,8 +5,10 @@ import {
   Expenses,
   Position,
   Policy,
+  IPolicy,
+  IExpenses,
+  IPosition,
 } from '../../models/company/companyModel'
-import { IExpenses, IPosition, IPolicy } from '../../utils/teamInterface'
 import {
   queryData,
   updateItem,

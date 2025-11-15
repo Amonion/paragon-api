@@ -18,6 +18,6 @@ router
     .get(notificationTemplateController_1.getNotificationTemplateById)
     .patch(upload.any(), notificationTemplateController_1.updateNotificationTemplate)
     .delete(notificationTemplateController_1.deleteNotificationTemplate);
-router.route('/').get(notificationController_1.getNotifications);
+router.route('/').get(notificationController_1.getNotifications).patch(notificationController_1.readNotifications);
 router.route('/:id').patch(upload.any(), notificationTemplateController_1.updateNotificationTemplate);
 exports.default = router;

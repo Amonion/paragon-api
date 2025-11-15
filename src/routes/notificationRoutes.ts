@@ -9,7 +9,10 @@ import {
   getNotificationTemplates,
   updateNotificationTemplate,
 } from '../controllers/message/notificationTemplateController'
-import { getNotifications } from '../controllers/message/notificationController'
+import {
+  getNotifications,
+  readNotifications,
+} from '../controllers/message/notificationController'
 
 const router = express.Router()
 
@@ -24,7 +27,7 @@ router
   .patch(upload.any(), updateNotificationTemplate)
   .delete(deleteNotificationTemplate)
 
-router.route('/').get(getNotifications)
+router.route('/').get(getNotifications).patch(readNotifications)
 router.route('/:id').patch(upload.any(), updateNotificationTemplate)
 
 export default router

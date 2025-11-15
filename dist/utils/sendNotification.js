@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendNotification = void 0;
 const notificationModel_1 = require("../models/message/notificationModel");
 const notificationTemplateModel_1 = require("../models/message/notificationTemplateModel");
+const helper_1 = require("./helper");
 const sendNotification = (templateName, data) => __awaiter(void 0, void 0, void 0, function* () {
     const notificationTemp = yield notificationTemplateModel_1.NotificationTemplate.findOne({
         name: templateName,
@@ -19,29 +20,24 @@ const sendNotification = (templateName, data) => __awaiter(void 0, void 0, void 
     if (!notificationTemp) {
         throw new Error(`Notification template '${templateName}' not found.`);
     }
-    const click_here = templateName === 'friend_request'
-        ? `<a href="/home/chat/${data.from}/${data.senderUsername}" class="text-[var(--custom)]">click here</a>`
-        : '';
     const content = notificationTemp.content
-        .replace('{{sender_username}}', data.senderUsername)
-        .replace('{{school}}', data.str1)
-        .replace('{{click_here}}', click_here);
+        .replace('{{username}}', data.user.username)
+        .replace('{{full_name}}', data.user.fullName)
+        .replace('{{part_payment}}', (0, helper_1.formatMoney)(data.transaction.partPayment))
+        .replace('{{total_payment}}', (0, helper_1.formatMoney)(data.transaction.totalAmount))
+        .replace('{{remaining_payment}}', (0, helper_1.formatMoney)(data.transaction.totalAmount - data.transaction.partPayment));
     const notification = yield notificationModel_1.Notification.create({
         greetings: notificationTemp.greetings,
         name: notificationTemp.name,
         title: notificationTemp.title,
-        senderUsername: data.senderUsername,
-        receiverUsername: data.receiverUsername,
-        senderName: data.senderName,
-        receiverName: data.receiverName,
-        senderPicture: data.senderPicture,
-        receiverPicture: data.receiverPicture,
+        username: data.user.username,
+        fullName: data.user.fullName,
+        picture: data.user.picture,
         content,
     });
-    const count = yield notificationModel_1.Notification.countDocuments({
-        receiverUsername: data.receiverUsername,
+    const unread = yield notificationModel_1.Notification.countDocuments({
         unread: true,
     });
-    return { Notification: notification, count };
+    return { notification, unread };
 });
 exports.sendNotification = sendNotification;

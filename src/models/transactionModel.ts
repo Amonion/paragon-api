@@ -6,6 +6,8 @@ export interface ITransaction extends Document {
   username: string
   status: string
   nature: string
+  partPayment: number
+  totalAmount: number
   picture: string
   createdAt: Date
 }

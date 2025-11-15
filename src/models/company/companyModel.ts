@@ -1,18 +1,13 @@
 import mongoose, { Schema } from 'mongoose'
-import { IExpenses, IPosition, IPolicy } from '../../utils/teamInterface'
 
-export interface ICompany extends Document {
-  name: string
-  domain: string
-  email: string
-  documents: string
-  finalInstruction: string
+export interface IPosition extends Document {
+  role: string
+  position: string
+  duties: string
+  level: number
+  salary: number
   phone: string
   allowSignup: boolean
-  headqauters: string
-  newVersion: string
-  newVersionLink: string
-  createdAt: Date
 }
 
 const PositionSchema: Schema = new Schema(
@@ -31,6 +26,19 @@ const PositionSchema: Schema = new Schema(
 )
 export const Position = mongoose.model<IPosition>('Position', PositionSchema)
 
+export interface ICompany extends Document {
+  name: string
+  domain: string
+  email: string
+  documents: string
+  finalInstruction: string
+  phone: string
+  allowSignup: boolean
+  headqauters: string
+  newVersion: string
+  newVersionLink: string
+  createdAt: Date
+}
 const CompanySchema: Schema = new Schema(
   {
     name: { type: String },
@@ -53,6 +61,14 @@ const CompanySchema: Schema = new Schema(
 )
 export const Company = mongoose.model<ICompany>('Company', CompanySchema)
 
+export interface IPolicy extends Document {
+  name: string
+  title: string
+  content: string
+  category: string
+  createdAt: Date
+}
+
 const PolicySchema: Schema = new Schema(
   {
     name: { type: String, default: '' },
@@ -67,6 +83,13 @@ const PolicySchema: Schema = new Schema(
 )
 export const Policy = mongoose.model<IPolicy>('Policy', PolicySchema)
 
+export interface IExpenses extends Document {
+  name: string
+  amount: number
+  receipt: string
+  description: string
+  createdAt: Date
+}
 const ExpensesSchema: Schema = new Schema(
   {
     name: { type: String },
