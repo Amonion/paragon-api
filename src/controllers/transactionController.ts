@@ -51,80 +51,29 @@ export const purchaseProducts = async (req: Request, res: Response) => {
   }
 }
 
-export const updateTrasanction = async (req: Request, res: Response) => {
+export const updatePartPayment = async (req: Request, res: Response) => {
   try {
-    const uploadedFiles = await uploadFilesToS3(req)
-    uploadedFiles.forEach((file) => {
-      req.body[file.fieldName] = file.s3Url
-    })
-    const cartProducts = JSON.parse(req.body.cartProducts)
-    req.body.cartProducts = JSON.parse(req.body.cartProducts)
-    req.body.status = JSON.parse(req.body.status)
-    req.body.isProfit = JSON.parse(req.body.isProfit)
-    req.body.partPayment = JSON.parse(req.body.partPayment)
-
-    if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
-      return res.status(400).json({ message: 'Cart is empty' })
-    }
-
-    const productIds = cartProducts.map((p) => p._id)
-    const dbProducts = await Product.find({ _id: { $in: productIds } })
-
-    if (dbProducts.length !== productIds.length) {
-      const missingIds = productIds.filter(
-        (id) => !dbProducts.find((p) => p._id.toString() === id.toString())
-      )
-      return res.status(404).json({
-        message: `Some products were not found: ${missingIds.join(', ')}`,
-      })
-    }
-
-    const outOfStock: { name: string; available: number; requested: number }[] =
-      []
-
-    for (const cartItem of cartProducts) {
-      const product = dbProducts.find(
-        (p) => p._id.toString() === cartItem._id.toString()
-      )
-      if (!product) continue
-      if (product.units < cartItem.cartUnits * cartItem.unitPerPurchase) {
-        outOfStock.push({
-          name: product.name,
-          available: product.units,
-          requested: cartItem.cartUnits,
-        })
-      }
-    }
-
-    if (outOfStock.length > 0) {
-      return res.status(400).json({
-        message:
-          'Some items are out of stock. Please adjust your order and try again.',
-        outOfStock,
-      })
-    }
-
-    const bulkOps = cartProducts.map((cartItem) => ({
-      updateOne: {
-        filter: { _id: cartItem._id },
-        update: {
-          $inc: { units: -cartItem.cartUnits * cartItem.unitPerPurchase },
-        },
-      },
-    }))
-
-    await Product.bulkWrite(bulkOps)
-    const transaction = await Transaction.create(req.body)
-    const user = await User.findOneAndUpdate(
-      { username: req.body.username },
+    const user = await User.findOne({ username: req.body.username })
+    const trx = await Transaction.findById(req.params.id)
+    const transaction = await Transaction.findByIdAndUpdate(
+      req.params.id,
       {
-        $inc: { totalPurchase: req.body.totalAmount },
-      }
+        $inc: { partPayment: req.body.partPayment },
+        status:
+          trx.partPayment + Number(req.body.partPayment) >= trx.totalAmount,
+      },
+      { new: true }
     )
+
     let notificationResult = null
 
-    if (req.body.partPayment) {
-      notificationResult = await sendNotification('credit', {
+    if (transaction.status) {
+      notificationResult = await sendNotification('completed', {
+        user,
+        transaction,
+      })
+    } else {
+      notificationResult = await sendNotification('part_payment', {
         user,
         transaction,
       })

@@ -82,24 +82,3 @@ const PolicySchema: Schema = new Schema(
   }
 )
 export const Policy = mongoose.model<IPolicy>('Policy', PolicySchema)
-
-export interface IExpenses extends Document {
-  name: string
-  amount: number
-  receipt: string
-  description: string
-  createdAt: Date
-}
-const ExpensesSchema: Schema = new Schema(
-  {
-    name: { type: String },
-    amount: { type: Number },
-    receipt: { type: String, default: '' },
-    description: { type: String, default: '' },
-    createdAt: { type: Date, default: Date.now },
-  },
-  {
-    timestamps: true,
-  }
-)
-export const Expenses = mongoose.model<IExpenses>('Expenses', ExpensesSchema)

@@ -2,11 +2,9 @@ import { Request, Response } from 'express'
 import { handleError } from '../../utils/errorHandler'
 import {
   Company,
-  Expenses,
   Position,
   Policy,
   IPolicy,
-  IExpenses,
   IPosition,
 } from '../../models/company/companyModel'
 import {
@@ -116,52 +114,6 @@ export const deletePolicy = async (req: Request, res: Response) => {
       'Policy was updated successfully'
     )
     res.status(200).json(result)
-  } catch (error) {
-    handleError(res, undefined, undefined, error)
-  }
-}
-
-//-----------------EXPENSES--------------------//
-export const createExpenses = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  createItem(req, res, Expenses, 'Expenses was created successfully')
-}
-
-export const getExpensesById = async (
-  req: Request,
-  res: Response
-): Promise<Response | void> => {
-  try {
-    const item = await Expenses.findById(req.params.id)
-    if (!item) {
-      return res.status(404).json({ message: 'Expenses not found' })
-    }
-    res.status(200).json(item)
-  } catch (error) {
-    handleError(res, undefined, undefined, error)
-  }
-}
-
-export const getExpenses = async (req: Request, res: Response) => {
-  try {
-    const result = await queryData<IExpenses>(Expenses, req)
-    res.status(200).json(result)
-  } catch (error) {
-    handleError(res, undefined, undefined, error)
-  }
-}
-
-export const updateExpenses = async (req: Request, res: Response) => {
-  try {
-    updateItem(
-      req,
-      res,
-      Expenses,
-      ['receipt'],
-      ['Expenses not found', 'Expenses was updated successfully']
-    )
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }

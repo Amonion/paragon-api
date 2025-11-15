@@ -11,5 +11,6 @@ const router = express_1.default.Router();
 router.route('/').get(transactionController_1.getTransactions).post(upload.any(), transactionController_1.createTrasanction);
 router.route('/purchase').post(transactionController_1.purchaseProducts);
 router.route('/barchart').get(transactionController_1.GetTransactionSummary);
+router.route('/part-payment/:id').patch(upload.any(), transactionController_1.updatePartPayment);
 router.route('/:id').patch(upload.any(), transactionController_1.updateTransaction);
 exports.default = router;

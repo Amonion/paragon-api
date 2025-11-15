@@ -9,6 +9,7 @@ export interface IUserData {
   leftAt: Date
   visitedAt: Date
 }
+
 export interface ISocketData {
   to: string
   action: string

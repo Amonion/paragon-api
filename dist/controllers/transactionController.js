@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetTransactionSummary = exports.updateTransaction = exports.getTransactions = exports.createTrasanction = exports.updateTrasanction = exports.purchaseProducts = void 0;
+exports.GetTransactionSummary = exports.updateTransaction = exports.getTransactions = exports.createTrasanction = exports.updatePartPayment = exports.purchaseProducts = void 0;
 const query_1 = require("../utils/query");
 const errorHandler_1 = require("../utils/errorHandler");
 const transactionModel_1 = require("../models/transactionModel");
@@ -52,63 +52,23 @@ const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.purchaseProducts = purchaseProducts;
-const updateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePartPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
-        uploadedFiles.forEach((file) => {
-            req.body[file.fieldName] = file.s3Url;
-        });
-        const cartProducts = JSON.parse(req.body.cartProducts);
-        req.body.cartProducts = JSON.parse(req.body.cartProducts);
-        req.body.status = JSON.parse(req.body.status);
-        req.body.isProfit = JSON.parse(req.body.isProfit);
-        req.body.partPayment = JSON.parse(req.body.partPayment);
-        if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
-            return res.status(400).json({ message: 'Cart is empty' });
-        }
-        const productIds = cartProducts.map((p) => p._id);
-        const dbProducts = yield productModel_1.Product.find({ _id: { $in: productIds } });
-        if (dbProducts.length !== productIds.length) {
-            const missingIds = productIds.filter((id) => !dbProducts.find((p) => p._id.toString() === id.toString()));
-            return res.status(404).json({
-                message: `Some products were not found: ${missingIds.join(', ')}`,
-            });
-        }
-        const outOfStock = [];
-        for (const cartItem of cartProducts) {
-            const product = dbProducts.find((p) => p._id.toString() === cartItem._id.toString());
-            if (!product)
-                continue;
-            if (product.units < cartItem.cartUnits * cartItem.unitPerPurchase) {
-                outOfStock.push({
-                    name: product.name,
-                    available: product.units,
-                    requested: cartItem.cartUnits,
-                });
-            }
-        }
-        if (outOfStock.length > 0) {
-            return res.status(400).json({
-                message: 'Some items are out of stock. Please adjust your order and try again.',
-                outOfStock,
-            });
-        }
-        const bulkOps = cartProducts.map((cartItem) => ({
-            updateOne: {
-                filter: { _id: cartItem._id },
-                update: {
-                    $inc: { units: -cartItem.cartUnits * cartItem.unitPerPurchase },
-                },
-            },
-        }));
-        yield productModel_1.Product.bulkWrite(bulkOps);
-        const transaction = yield transactionModel_1.Transaction.create(req.body);
-        const user = yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, {
-            $inc: { totalPurchase: req.body.totalAmount },
-        });
+        const user = yield userModel_1.User.findOne({ username: req.body.username });
+        const trx = yield transactionModel_1.Transaction.findById(req.params.id);
+        const transaction = yield transactionModel_1.Transaction.findByIdAndUpdate(req.params.id, {
+            $inc: { partPayment: req.body.partPayment },
+            status: trx.partPayment + Number(req.body.partPayment) >= trx.totalAmount,
+        }, { new: true });
         let notificationResult = null;
-        if (req.body.partPayment) {
-            notificationResult = yield (0, sendNotification_1.sendNotification)('credit', {
+        if (transaction.status) {
+            notificationResult = yield (0, sendNotification_1.sendNotification)('completed', {
+                user,
+                transaction,
+            });
+        }
+        else {
+            notificationResult = yield (0, sendNotification_1.sendNotification)('part_payment', {
                 user,
                 transaction,
             });
@@ -125,7 +85,7 @@ const updateTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.updateTrasanction = updateTrasanction;
+exports.updatePartPayment = updatePartPayment;
 const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);

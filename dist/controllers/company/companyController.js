@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePosition = exports.getPositions = exports.getPositionById = exports.createPosition = exports.updateExpenses = exports.getExpenses = exports.getExpensesById = exports.createExpenses = exports.deletePolicy = exports.updatePolicy = exports.getPolcies = exports.getPolicyById = exports.createPolicy = exports.getCompany = exports.getCompanyById = exports.updateCompany = void 0;
+exports.updatePosition = exports.getPositions = exports.getPositionById = exports.createPosition = exports.deletePolicy = exports.updatePolicy = exports.getPolcies = exports.getPolicyById = exports.createPolicy = exports.getCompany = exports.getCompanyById = exports.updateCompany = void 0;
 const errorHandler_1 = require("../../utils/errorHandler");
 const companyModel_1 = require("../../models/company/companyModel");
 const query_1 = require("../../utils/query");
@@ -102,43 +102,6 @@ const deletePolicy = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.deletePolicy = deletePolicy;
-//-----------------EXPENSES--------------------//
-const createExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    (0, query_1.createItem)(req, res, companyModel_1.Expenses, 'Expenses was created successfully');
-});
-exports.createExpenses = createExpenses;
-const getExpensesById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const item = yield companyModel_1.Expenses.findById(req.params.id);
-        if (!item) {
-            return res.status(404).json({ message: 'Expenses not found' });
-        }
-        res.status(200).json(item);
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.getExpensesById = getExpensesById;
-const getExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield (0, query_1.queryData)(companyModel_1.Expenses, req);
-        res.status(200).json(result);
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.getExpenses = getExpenses;
-const updateExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        (0, query_1.updateItem)(req, res, companyModel_1.Expenses, ['receipt'], ['Expenses not found', 'Expenses was updated successfully']);
-    }
-    catch (error) {
-        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
-    }
-});
-exports.updateExpenses = updateExpenses;
 //-----------------POSITION--------------------//
 const createPosition = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     (0, query_1.createItem)(req, res, companyModel_1.Position, 'Position was created successfully');

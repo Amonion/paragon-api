@@ -10,6 +10,7 @@ import companyRoutes from './routes/companyRoutes'
 import faqRoutes from './routes/faqRoutes'
 import serviceRoutes from './routes/serviceRoutes'
 import emailRoutes from './routes/emailRoutes'
+import expenseRoutes from './routes/expenseRoutes'
 import notificationRoutes from './routes/notificationRoutes'
 import productRoutes from './routes/productRoutes'
 import reviewRoutes from './routes/reviewRoutes'
@@ -89,6 +90,7 @@ app.use('/api/v1/company', companyRoutes)
 app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/services', serviceRoutes)
 app.use('/api/v1/emails', emailRoutes)
+app.use('/api/v1/expenses', expenseRoutes)
 app.use('/api/v1/notifications', notificationRoutes)
 app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/reviews', reviewRoutes)

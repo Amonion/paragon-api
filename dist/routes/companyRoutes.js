@@ -10,7 +10,6 @@ const upload = (0, multer_1.default)();
 const router = express_1.default.Router();
 router.route('/').get(companyController_1.getCompany).patch(upload.any(), companyController_1.updateCompany);
 router.route('/policy').get(companyController_1.getPolcies).post(upload.any(), companyController_1.createPolicy);
-router.route('/expenses').get(companyController_1.getExpenses).post(upload.any(), companyController_1.createExpenses);
 router.route('/positions').get(companyController_1.getPositions).post(upload.any(), companyController_1.createPosition);
 router
     .route('/positions/:id')
@@ -21,8 +20,4 @@ router
     .get(companyController_1.getPolicyById)
     .patch(upload.any(), companyController_1.updatePolicy)
     .delete(companyController_1.deletePolicy);
-router
-    .route('/expenses/:id')
-    .get(companyController_1.getExpensesById)
-    .patch(upload.any(), companyController_1.updateExpenses);
 exports.default = router;
