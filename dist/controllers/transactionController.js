@@ -17,6 +17,7 @@ const productModel_1 = require("../models/productModel");
 const fileUpload_1 = require("../utils/fileUpload");
 const userModel_1 = require("../models/users/userModel");
 const sendNotification_1 = require("../utils/sendNotification");
+const app_1 = require("../app");
 const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cartProducts = req.body.cartProducts;
@@ -151,6 +152,13 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
             notificationResult = yield (0, sendNotification_1.sendNotification)('product_purchase', {
                 user,
                 transaction,
+            });
+        }
+        if (req.body.from) {
+            app_1.io.emit(`admin`, {
+                transaction,
+                notification: notificationResult.notification,
+                unread: notificationResult.unread,
             });
         }
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);

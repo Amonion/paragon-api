@@ -6,6 +6,7 @@ import { IProduct, Product } from '../models/productModel'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { User } from '../models/users/userModel'
 import { sendNotification } from '../utils/sendNotification'
+import { io } from '../app'
 
 export const purchaseProducts = async (req: Request, res: Response) => {
   try {
@@ -172,6 +173,14 @@ export const createTrasanction = async (req: Request, res: Response) => {
       notificationResult = await sendNotification('product_purchase', {
         user,
         transaction,
+      })
+    }
+
+    if (req.body.from) {
+      io.emit(`admin`, {
+        transaction,
+        notification: notificationResult.notification,
+        unread: notificationResult.unread,
       })
     }
 
