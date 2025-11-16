@@ -15,6 +15,7 @@ export interface ITransaction extends Document {
 const TransactionSchema: Schema = new Schema(
   {
     fullName: { type: String },
+    staffName: { type: String },
     username: { type: String },
     picture: { type: String },
     payment: { type: String },

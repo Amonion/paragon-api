@@ -147,6 +147,12 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 transaction,
             });
         }
+        else {
+            notificationResult = yield (0, sendNotification_1.sendNotification)('product_purchase', {
+                user,
+                transaction,
+            });
+        }
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json({
             message: 'The transaction has been created successfully.',

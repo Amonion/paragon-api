@@ -37,6 +37,7 @@ exports.Transaction = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const TransactionSchema = new mongoose_1.Schema({
     fullName: { type: String },
+    staffName: { type: String },
     username: { type: String },
     picture: { type: String },
     payment: { type: String },

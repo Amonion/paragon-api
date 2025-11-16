@@ -168,6 +168,11 @@ export const createTrasanction = async (req: Request, res: Response) => {
         user,
         transaction,
       })
+    } else {
+      notificationResult = await sendNotification('product_purchase', {
+        user,
+        transaction,
+      })
     }
 
     const result = await queryData<IProduct>(Product, req)
