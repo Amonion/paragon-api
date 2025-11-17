@@ -59,6 +59,7 @@ const UserSchema = new mongoose_1.Schema({
     passwordResetToken: { type: String, default: null },
     phone: { type: String },
     picture: { type: String },
+    address: { type: String },
     username: { type: String },
     staffPositions: { type: String },
     staffRanking: { type: Number },

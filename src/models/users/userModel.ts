@@ -14,6 +14,7 @@ export interface IUser extends Document {
   phone: string
   picture: string
   username: string
+  address: string
   staffPositions: string
   salary: number
   staffRanking: number
@@ -46,6 +47,7 @@ const UserSchema: Schema = new Schema(
     passwordResetToken: { type: String, default: null },
     phone: { type: String },
     picture: { type: String },
+    address: { type: String },
     username: { type: String },
     staffPositions: { type: String },
     staffRanking: { type: Number },

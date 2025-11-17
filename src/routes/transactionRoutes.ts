@@ -4,6 +4,7 @@ import {
   createTrasanction,
   getTransactions,
   GetTransactionSummary,
+  massDeleteTrasanction,
   purchaseProducts,
   updatePartPayment,
   updateTransaction,
@@ -12,6 +13,7 @@ const upload = multer()
 
 const router = express.Router()
 
+router.route('/mass-delete').patch(upload.any(), massDeleteTrasanction)
 router.route('/').get(getTransactions).post(upload.any(), createTrasanction)
 router.route('/purchase').post(purchaseProducts)
 router.route('/barchart').get(GetTransactionSummary)

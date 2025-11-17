@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetTransactionSummary = exports.updateTransaction = exports.getTransactions = exports.createTrasanction = exports.updatePartPayment = exports.purchaseProducts = void 0;
+exports.GetTransactionSummary = exports.updateTransaction = exports.getTransactions = exports.massDeleteTrasanction = exports.createTrasanction = exports.updatePartPayment = exports.purchaseProducts = void 0;
 const query_1 = require("../utils/query");
 const errorHandler_1 = require("../utils/errorHandler");
 const transactionModel_1 = require("../models/transactionModel");
@@ -137,8 +137,19 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
             },
         }));
         yield productModel_1.Product.bulkWrite(bulkOps);
+        const sales = yield transactionModel_1.Transaction.countDocuments();
+        req.body.invoiceNumber = `PG-${req.body.invoiceNumber}${sales + 1}`;
         const transaction = yield transactionModel_1.Transaction.create(req.body);
-        const user = yield userModel_1.User.findOneAndUpdate({ username: req.body.username }, {
+        if (req.body.userId === '') {
+            yield userModel_1.User.findOneAndUpdate({ phone: req.body.phone }, {
+                username: req.body.username ? req.body.username : req.body.email,
+                phone: req.body.phone,
+                email: req.body.email,
+                address: req.body.address,
+                fullName: req.body.fullName,
+            }, { new: true, upsert: true });
+        }
+        const user = yield userModel_1.User.findOneAndUpdate({ phone: req.body.phone }, {
             $inc: { totalPurchase: req.body.totalAmount },
         });
         let notificationResult = null;
@@ -174,6 +185,30 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createTrasanction = createTrasanction;
+const massDeleteTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const transactions = yield transactionModel_1.Transaction.find({ _id: { $in: req.body.ids } });
+        yield transactionModel_1.Transaction.deleteMany({ _id: { $in: req.body.ids } });
+        for (let x = 0; x < transactions.length; x++) {
+            const tx = transactions[x];
+            for (let i = 0; i < tx.cartProducts.length; i++) {
+                const cart = tx.cartProducts[i];
+                productModel_1.Product.findByIdAndUpdate(cart._id, {
+                    $inc: { units: cart.cartUnits * cart.unitPerPurchase },
+                });
+            }
+        }
+        const result = yield (0, query_1.queryData)(transactionModel_1.Transaction, req);
+        res.status(200).json({
+            message: 'The transactions has been deleted successfully.',
+            result,
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.massDeleteTrasanction = massDeleteTrasanction;
 const getTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, query_1.queryData)(transactionModel_1.Transaction, req);

@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import { IProduct } from './productModel'
 
 export interface ITransaction extends Document {
   _id: string
@@ -6,9 +7,19 @@ export interface ITransaction extends Document {
   username: string
   status: string
   nature: string
+  email: string
+  phone: string
+  remark: string
+  invoiceNumber: string
+  delivery: string
+  address: string
+  distance: number
+  fuel: number
   partPayment: number
   totalAmount: number
+  adjustedTotal: number
   picture: string
+  cartProducts: IProduct[]
   createdAt: Date
 }
 
@@ -18,14 +29,26 @@ const TransactionSchema: Schema = new Schema(
     staffName: { type: String },
     username: { type: String },
     picture: { type: String },
+    email: { type: String },
+    phone: { type: String },
     payment: { type: String },
+    remark: { type: String },
+    invoiceNumber: { type: String },
+    address: { type: String },
+    delivery: { type: String },
+    startingLocation: { type: String },
     totalAmount: { type: Number },
+    distance: { type: Number },
+    fuel: { type: Number },
+    adjustedTotal: { type: Number },
     partPayment: { type: Number },
     receipt: { type: String },
     nature: { type: String },
     status: { type: Boolean },
     isProfit: { type: Boolean, default: false },
     cartProducts: { type: Array },
+    startedAt: { type: Date },
+    endedAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
   },
   {

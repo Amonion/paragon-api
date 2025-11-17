@@ -5,6 +5,7 @@ export interface IProduct extends Document {
   name: string
   purchaseUnit: string
   units: number
+  cartUnits: number
   unitPerPurchase: number
   discount: number
   costPrice: number

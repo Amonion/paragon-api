@@ -26,6 +26,7 @@ export const sendNotification = async (
     .replace('{{full_name}}', data.user.fullName)
     .replace('{{part_payment}}', formatMoney(data.transaction.partPayment))
     .replace('{{total_payment}}', formatMoney(data.transaction.totalAmount))
+    .replace('{{total_amount}}', formatMoney(data.transaction.totalAmount))
     .replace(
       '{{remaining_payment}}',
       formatMoney(data.transaction.totalAmount - data.transaction.partPayment)

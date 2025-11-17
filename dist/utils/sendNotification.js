@@ -25,6 +25,7 @@ const sendNotification = (templateName, data) => __awaiter(void 0, void 0, void 
         .replace('{{full_name}}', data.user.fullName)
         .replace('{{part_payment}}', (0, helper_1.formatMoney)(data.transaction.partPayment))
         .replace('{{total_payment}}', (0, helper_1.formatMoney)(data.transaction.totalAmount))
+        .replace('{{total_amount}}', (0, helper_1.formatMoney)(data.transaction.totalAmount))
         .replace('{{remaining_payment}}', (0, helper_1.formatMoney)(data.transaction.totalAmount - data.transaction.partPayment));
     const notification = yield notificationModel_1.Notification.create({
         greetings: notificationTemp.greetings,

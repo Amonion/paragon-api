@@ -155,9 +155,24 @@ export const createTrasanction = async (req: Request, res: Response) => {
     }))
 
     await Product.bulkWrite(bulkOps)
+    const sales = await Transaction.countDocuments()
+    req.body.invoiceNumber = `PG-${req.body.invoiceNumber}${sales + 1}`
     const transaction = await Transaction.create(req.body)
+    if (req.body.userId === '') {
+      await User.findOneAndUpdate(
+        { phone: req.body.phone },
+        {
+          username: req.body.username ? req.body.username : req.body.email,
+          phone: req.body.phone,
+          email: req.body.email,
+          address: req.body.address,
+          fullName: req.body.fullName,
+        },
+        { new: true, upsert: true }
+      )
+    }
     const user = await User.findOneAndUpdate(
-      { username: req.body.username },
+      { phone: req.body.phone },
       {
         $inc: { totalPurchase: req.body.totalAmount },
       }
@@ -190,6 +205,30 @@ export const createTrasanction = async (req: Request, res: Response) => {
       result,
       transaction,
       notificationResult,
+    })
+  } catch (error: any) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const massDeleteTrasanction = async (req: Request, res: Response) => {
+  try {
+    const transactions = await Transaction.find({ _id: { $in: req.body.ids } })
+    await Transaction.deleteMany({ _id: { $in: req.body.ids } })
+    for (let x = 0; x < transactions.length; x++) {
+      const tx = transactions[x]
+      for (let i = 0; i < tx.cartProducts.length; i++) {
+        const cart = tx.cartProducts[i]
+        Product.findByIdAndUpdate(cart._id, {
+          $inc: { units: cart.cartUnits * cart.unitPerPurchase },
+        })
+      }
+    }
+
+    const result = await queryData<ITransaction>(Transaction, req)
+    res.status(200).json({
+      message: 'The transactions has been deleted successfully.',
+      result,
     })
   } catch (error: any) {
     handleError(res, undefined, undefined, error)
