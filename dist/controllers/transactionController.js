@@ -20,27 +20,10 @@ const sendNotification_1 = require("../utils/sendNotification");
 const app_1 = require("../app");
 const purchaseProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cartProducts = req.body.cartProducts;
-        if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
-            return res.status(400).json({ message: 'Cart is empty' });
-        }
-        const productIds = cartProducts.map((p) => p._id);
-        const dbProducts = yield productModel_1.Product.find({ _id: { $in: productIds } });
-        if (dbProducts.length !== productIds.length) {
-            const missingIds = productIds.filter((id) => !dbProducts.find((p) => p._id.toString() === id.toString()));
-            return res.status(404).json({
-                message: `Some products were not found: ${missingIds.join(', ')}`,
-            });
-        }
-        const bulkOps = cartProducts.map((cartItem) => ({
-            updateOne: {
-                filter: { _id: cartItem._id },
-                update: {
-                    $inc: { units: cartItem.cartUnits * (cartItem.unitPerPurchase || 1) },
-                },
-            },
-        }));
-        yield productModel_1.Product.bulkWrite(bulkOps);
+        const product = req.body.product;
+        yield productModel_1.Product.findByIdAndUpdate(product._id, {
+            $inc: { units: product.cartUnits * (product.unitPerPurchase || 1) },
+        });
         yield transactionModel_1.Transaction.create(req.body);
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json({

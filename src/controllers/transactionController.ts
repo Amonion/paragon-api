@@ -10,35 +10,10 @@ import { io } from '../app'
 
 export const purchaseProducts = async (req: Request, res: Response) => {
   try {
-    const cartProducts = req.body.cartProducts
-
-    if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
-      return res.status(400).json({ message: 'Cart is empty' })
-    }
-
-    const productIds = cartProducts.map((p) => p._id)
-    const dbProducts = await Product.find({ _id: { $in: productIds } })
-
-    if (dbProducts.length !== productIds.length) {
-      const missingIds = productIds.filter(
-        (id) => !dbProducts.find((p) => p._id.toString() === id.toString())
-      )
-      return res.status(404).json({
-        message: `Some products were not found: ${missingIds.join(', ')}`,
-      })
-    }
-
-    const bulkOps = cartProducts.map((cartItem) => ({
-      updateOne: {
-        filter: { _id: cartItem._id },
-        update: {
-          $inc: { units: cartItem.cartUnits * (cartItem.unitPerPurchase || 1) },
-        },
-      },
-    }))
-
-    await Product.bulkWrite(bulkOps)
-
+    const product = req.body.product
+    await Product.findByIdAndUpdate(product._id, {
+      $inc: { units: product.cartUnits * (product.unitPerPurchase || 1) },
+    })
     await Transaction.create(req.body)
 
     const result = await queryData<IProduct>(Product, req)

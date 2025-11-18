@@ -166,7 +166,6 @@ export const deleteProductStocking = async (req: Request, res: Response) => {
 
 export const getProductStocks = async (req: Request, res: Response) => {
   try {
-    console.log(req.query)
     const result = await queryData<IStocking>(Stocking, req)
     res.status(200).json(result)
   } catch (error) {

@@ -157,7 +157,6 @@ const deleteProductStocking = (req, res) => __awaiter(void 0, void 0, void 0, fu
 exports.deleteProductStocking = deleteProductStocking;
 const getProductStocks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.query);
         const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);
         res.status(200).json(result);
     }

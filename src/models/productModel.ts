@@ -14,6 +14,9 @@ export interface IProduct extends Document {
   picture: string
   createdAt: Date
   seoTitle: string
+  supName: string
+  supAddress: string
+  supPhone: string
 }
 
 const ProductSchema: Schema = new Schema(
@@ -23,6 +26,9 @@ const ProductSchema: Schema = new Schema(
     purchaseUnit: { type: String },
     seoTitle: { type: String },
     picture: { type: String },
+    supName: { type: String },
+    supAddress: { type: String },
+    supPhone: { type: String },
     units: { type: Number },
     unitPerPurchase: { type: Number, default: 1 },
     price: { type: Number },
