@@ -36,11 +36,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Service = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const ServiceSchema = new mongoose_1.Schema({
+    clientName: { type: String },
+    clientPhone: { type: String },
+    clientAddress: { type: String },
+    receipt: { type: String },
+    amount: { type: Number },
     description: { type: String },
     staffName: { type: String },
     title: { type: String },
     video: { type: String },
     username: { type: String },
+    startedAt: { type: Date },
+    endedAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,

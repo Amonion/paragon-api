@@ -33,41 +33,19 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stocking = exports.Product = void 0;
+exports.Consumption = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const ProductSchema = new mongoose_1.Schema({
-    description: { type: String },
-    name: { type: String },
-    purchaseUnit: { type: String },
-    seoTitle: { type: String },
-    picture: { type: String },
-    supName: { type: String },
-    supAddress: { type: String },
-    supPhone: { type: String },
+const ConsumptionSchema = new mongoose_1.Schema({
+    birds: { type: Number },
+    birdAge: { type: String },
+    consumption: { type: Number },
+    birdClass: { type: String },
+    feed: { type: String },
+    weight: { type: String },
+    remark: { type: String },
     consumptionUnit: { type: String },
-    units: { type: Number },
-    unitPerPurchase: { type: Number, default: 1 },
-    price: { type: Number },
-    discount: { type: Number },
-    costPrice: { type: Number },
-    isBuyable: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Product = mongoose_1.default.model('Product', ProductSchema);
-const StockingSchema = new mongoose_1.Schema({
-    staffName: { type: String },
-    name: { type: String },
-    picture: { type: String },
-    reason: { type: String },
-    units: { type: Number },
-    productId: { type: String },
-    video: { type: String },
-    amount: { type: Number },
-    isProfit: { type: Boolean },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Stocking = mongoose_1.default.model('Stocking', StockingSchema);
+exports.Consumption = mongoose_1.default.model('Consumption', ConsumptionSchema);

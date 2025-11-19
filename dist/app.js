@@ -22,6 +22,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const errorHandler_1 = require("./utils/errorHandler");
 const blogRoutes_1 = __importDefault(require("./routes/blogRoutes"));
 const companyRoutes_1 = __importDefault(require("./routes/companyRoutes"));
+const consumptionRoutes_1 = __importDefault(require("./routes/consumptionRoutes"));
 const faqRoutes_1 = __importDefault(require("./routes/faqRoutes"));
 const serviceRoutes_1 = __importDefault(require("./routes/serviceRoutes"));
 const emailRoutes_1 = __importDefault(require("./routes/emailRoutes"));
@@ -29,6 +30,7 @@ const expenseRoutes_1 = __importDefault(require("./routes/expenseRoutes"));
 const notificationRoutes_1 = __importDefault(require("./routes/notificationRoutes"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const reviewRoutes_1 = __importDefault(require("./routes/reviewRoutes"));
+const socialRoutes_1 = __importDefault(require("./routes/socialRoutes"));
 const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
@@ -60,8 +62,8 @@ const io = new socket_io_1.Server(server, {
     cors: {
         origin: [
             'http://localhost:3000',
-            'https://schoolingsocial.netlify.app',
-            'https://schoolingsocial.com',
+            'https://paragonfarmsltd.netlify.app',
+            'https://paragonfarmsltd.com',
         ],
         methods: ['GET', 'POST'],
         credentials: true,
@@ -87,6 +89,7 @@ io.on('connection', (socket) => {
 app.use(body_parser_1.default.json());
 app.use('/api/v1/blogs', blogRoutes_1.default);
 app.use('/api/v1/company', companyRoutes_1.default);
+app.use('/api/v1/consumptions', consumptionRoutes_1.default);
 app.use('/api/v1/faqs', faqRoutes_1.default);
 app.use('/api/v1/services', serviceRoutes_1.default);
 app.use('/api/v1/emails', emailRoutes_1.default);
@@ -95,6 +98,7 @@ app.use('/api/v1/notifications', notificationRoutes_1.default);
 app.use('/api/v1/products', productRoutes_1.default);
 app.use('/api/v1/reviews', reviewRoutes_1.default);
 app.use('/api/v1/transactions', transactionRoutes_1.default);
+app.use('/api/v1/socials', socialRoutes_1.default);
 app.use('/api/v1/users', userRoutes_1.default);
 app.use((req, res, next) => {
     (0, errorHandler_1.handleError)(res, 404, `Request not found: ${req.method} ${req.originalUrl}`);

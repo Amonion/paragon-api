@@ -29,6 +29,7 @@ const ProductSchema: Schema = new Schema(
     supName: { type: String },
     supAddress: { type: String },
     supPhone: { type: String },
+    consumptionUnit: { type: String },
     units: { type: Number },
     unitPerPurchase: { type: Number, default: 1 },
     price: { type: Number },

@@ -7,6 +7,7 @@ import dotenv from 'dotenv'
 import { handleError } from './utils/errorHandler'
 import blogRoutes from './routes/blogRoutes'
 import companyRoutes from './routes/companyRoutes'
+import consumptionRoutes from './routes/consumptionRoutes'
 import faqRoutes from './routes/faqRoutes'
 import serviceRoutes from './routes/serviceRoutes'
 import emailRoutes from './routes/emailRoutes'
@@ -14,6 +15,7 @@ import expenseRoutes from './routes/expenseRoutes'
 import notificationRoutes from './routes/notificationRoutes'
 import productRoutes from './routes/productRoutes'
 import reviewRoutes from './routes/reviewRoutes'
+import socialRoutes from './routes/socialRoutes'
 import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
@@ -56,8 +58,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:3000',
-      'https://schoolingsocial.netlify.app',
-      'https://schoolingsocial.com',
+      'https://paragonfarmsltd.netlify.app',
+      'https://paragonfarmsltd.com',
     ],
     methods: ['GET', 'POST'],
     credentials: true,
@@ -87,6 +89,7 @@ app.use(bodyParser.json())
 
 app.use('/api/v1/blogs', blogRoutes)
 app.use('/api/v1/company', companyRoutes)
+app.use('/api/v1/consumptions', consumptionRoutes)
 app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/services', serviceRoutes)
 app.use('/api/v1/emails', emailRoutes)
@@ -95,6 +98,7 @@ app.use('/api/v1/notifications', notificationRoutes)
 app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
 app.use('/api/v1/transactions', transactionRoutes)
+app.use('/api/v1/socials', socialRoutes)
 app.use('/api/v1/users', userRoutes)
 
 app.use((req, res, next) => {

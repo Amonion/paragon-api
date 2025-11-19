@@ -33,41 +33,20 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stocking = exports.Product = void 0;
+exports.Social = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const ProductSchema = new mongoose_1.Schema({
-    description: { type: String },
+const SocialSchema = new mongoose_1.Schema({
     name: { type: String },
-    purchaseUnit: { type: String },
-    seoTitle: { type: String },
+    post: { type: String },
     picture: { type: String },
-    supName: { type: String },
-    supAddress: { type: String },
-    supPhone: { type: String },
-    consumptionUnit: { type: String },
-    units: { type: Number },
-    unitPerPurchase: { type: Number, default: 1 },
-    price: { type: Number },
-    discount: { type: Number },
-    costPrice: { type: Number },
-    isBuyable: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Product = mongoose_1.default.model('Product', ProductSchema);
-const StockingSchema = new mongoose_1.Schema({
+    socialType: { type: String },
+    likes: { type: Number },
+    comments: { type: Number },
+    url: { type: String },
     staffName: { type: String },
-    name: { type: String },
-    picture: { type: String },
-    reason: { type: String },
-    units: { type: Number },
-    productId: { type: String },
-    video: { type: String },
-    amount: { type: Number },
-    isProfit: { type: Boolean },
+    updatedAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Stocking = mongoose_1.default.model('Stocking', StockingSchema);
+exports.Social = mongoose_1.default.model('Social', SocialSchema);
