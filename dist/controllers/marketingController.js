@@ -9,25 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchConsumptions = exports.getConsumptions = exports.updateConsumption = exports.getConsumption = exports.createConsumption = void 0;
+exports.searchMarketings = exports.getMarketings = exports.updateMarketing = exports.getMarketing = exports.createMarketing = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
-const consumptionModel_1 = require("../models/consumptionModel");
-const productModel_1 = require("../models/productModel");
-const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const marketingModel_1 = require("../models/marketingModel");
+const createMarketing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        yield productModel_1.Product.findByIdAndUpdate(req.body.feedId, {
-            $inc: { units: -1 * (req.body.consumption || 1) },
-        });
-        yield consumptionModel_1.Consumption.create(req.body);
-        const result = yield (0, query_1.queryData)(consumptionModel_1.Consumption, req);
+        yield marketingModel_1.Marketing.create(req.body);
+        const result = yield (0, query_1.queryData)(marketingModel_1.Marketing, req);
         res.status(200).json({
-            message: 'Consumption was created successfully',
+            message: 'Marketing was created successfully',
             result,
         });
     }
@@ -35,37 +31,37 @@ const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, functi
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.createConsumption = createConsumption;
-const getConsumption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createMarketing = createMarketing;
+const getMarketing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const consumption = yield consumptionModel_1.Consumption.findById(req.params.id);
-        if (!consumption) {
-            return res.status(404).json({ message: 'Consumption not found' });
+        const marketing = yield marketingModel_1.Marketing.findById(req.params.id);
+        if (!marketing) {
+            return res.status(404).json({ message: 'Marketing not found' });
         }
-        res.status(200).json({ data: consumption });
+        res.status(200).json({ data: marketing });
     }
     catch (error) {
         console.log(error);
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.getConsumption = getConsumption;
-const updateConsumption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getMarketing = getMarketing;
+const updateMarketing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        const consumption = yield consumptionModel_1.Consumption.findByIdAndUpdate(req.params.id, req.body, {
+        const marketing = yield marketingModel_1.Marketing.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         });
-        if (!consumption) {
-            return res.status(404).json({ message: 'Consumption not found' });
+        if (!marketing) {
+            return res.status(404).json({ message: 'Marketing not found' });
         }
-        const result = yield (0, query_1.queryData)(consumptionModel_1.Consumption, req);
+        const result = yield (0, query_1.queryData)(marketingModel_1.Marketing, req);
         res.status(200).json({
-            message: 'The Consumption is updated successfully',
+            message: 'The Marketing is updated successfully',
             result,
         });
     }
@@ -73,18 +69,18 @@ const updateConsumption = (req, res) => __awaiter(void 0, void 0, void 0, functi
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.updateConsumption = updateConsumption;
-const getConsumptions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.updateMarketing = updateMarketing;
+const getMarketings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, query_1.queryData)(consumptionModel_1.Consumption, req);
+        const result = yield (0, query_1.queryData)(marketingModel_1.Marketing, req);
         res.status(200).json(result);
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
     }
 });
-exports.getConsumptions = getConsumptions;
-const searchConsumptions = (req, res) => {
-    return (0, query_1.search)(consumptionModel_1.Consumption, req, res);
+exports.getMarketings = getMarketings;
+const searchMarketings = (req, res) => {
+    return (0, query_1.search)(marketingModel_1.Marketing, req, res);
 };
-exports.searchConsumptions = searchConsumptions;
+exports.searchMarketings = searchMarketings;

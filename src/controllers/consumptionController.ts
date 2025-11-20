@@ -3,6 +3,7 @@ import { queryData, search } from '../utils/query'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
 import { IConsumption, Consumption } from '../models/consumptionModel'
+import { Product } from '../models/productModel'
 
 export const createConsumption = async (
   req: Request,
@@ -14,6 +15,9 @@ export const createConsumption = async (
       req.body[file.fieldName] = file.s3Url
     })
 
+    await Product.findByIdAndUpdate(req.body.feedId, {
+      $inc: { units: -1 * (req.body.consumption || 1) },
+    })
     await Consumption.create(req.body)
     const result = await queryData<IConsumption>(Consumption, req)
     res.status(200).json({

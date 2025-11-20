@@ -33,20 +33,19 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Consumption = void 0;
+exports.Marketing = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const ConsumptionSchema = new mongoose_1.Schema({
-    birds: { type: Number },
-    birdAge: { type: String },
-    consumption: { type: Number },
-    birdClass: { type: String },
-    feed: { type: String },
-    feedId: { type: String },
-    weight: { type: String },
+const MarketingSchema = new mongoose_1.Schema({
+    customerName: { type: String },
+    customerAddress: { type: String },
+    customerPhone: { type: String },
     remark: { type: String },
-    consumptionUnit: { type: String },
+    isRegistered: { type: Boolean },
+    username: { type: String },
+    email: { type: String },
+    staffName: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Consumption = mongoose_1.default.model('Consumption', ConsumptionSchema);
+exports.Marketing = mongoose_1.default.model('Marketing', MarketingSchema);

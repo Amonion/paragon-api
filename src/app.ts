@@ -10,6 +10,8 @@ import companyRoutes from './routes/companyRoutes'
 import consumptionRoutes from './routes/consumptionRoutes'
 import faqRoutes from './routes/faqRoutes'
 import serviceRoutes from './routes/serviceRoutes'
+import marketingRoutes from './routes/marketingRoutes'
+import strategyRoutes from './routes/strategyRoutes'
 import emailRoutes from './routes/emailRoutes'
 import expenseRoutes from './routes/expenseRoutes'
 import notificationRoutes from './routes/notificationRoutes'
@@ -90,6 +92,8 @@ app.use(bodyParser.json())
 app.use('/api/v1/blogs', blogRoutes)
 app.use('/api/v1/company', companyRoutes)
 app.use('/api/v1/consumptions', consumptionRoutes)
+app.use('/api/v1/marketing', marketingRoutes)
+app.use('/api/v1/strategies', strategyRoutes)
 app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/services', serviceRoutes)
 app.use('/api/v1/emails', emailRoutes)

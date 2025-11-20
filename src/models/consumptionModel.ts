@@ -19,6 +19,7 @@ const ConsumptionSchema: Schema = new Schema(
     consumption: { type: Number },
     birdClass: { type: String },
     feed: { type: String },
+    feedId: { type: String },
     weight: { type: String },
     remark: { type: String },
     consumptionUnit: { type: String },
