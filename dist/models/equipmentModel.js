@@ -33,40 +33,19 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Transaction = void 0;
+exports.Equipment = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const TransactionSchema = new mongoose_1.Schema({
-    fullName: { type: String },
+const EquipmentSchema = new mongoose_1.Schema({
+    equipment: { type: String },
     staffName: { type: String },
-    username: { type: String },
-    picture: { type: String },
-    email: { type: String },
-    phone: { type: String },
-    payment: { type: String },
-    supName: { type: String },
-    supAddress: { type: String },
-    supPhone: { type: String },
-    product: { type: Object },
+    units: { type: Number },
+    authorizedBy: { type: String },
+    staffUsername: { type: String },
+    issuedBy: { type: String },
     remark: { type: String },
-    invoiceNumber: { type: String },
-    address: { type: String },
-    guide: { type: String },
-    delivery: { type: String },
-    startingLocation: { type: String },
-    totalAmount: { type: Number },
-    distance: { type: Number },
-    fuel: { type: Number },
-    adjustedTotal: { type: Number },
-    partPayment: { type: Number },
-    receipt: { type: String },
-    nature: { type: String },
-    status: { type: Boolean },
-    isProfit: { type: Boolean, default: false },
-    cartProducts: { type: Array },
-    startedAt: { type: Date },
-    endedAt: { type: Date },
+    returnedAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Transaction = mongoose_1.default.model('Transaction', TransactionSchema);
+exports.Equipment = mongoose_1.default.model('Equipment', EquipmentSchema);

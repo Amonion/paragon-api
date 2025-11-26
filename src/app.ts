@@ -13,6 +13,8 @@ import serviceRoutes from './routes/serviceRoutes'
 import marketingRoutes from './routes/marketingRoutes'
 import strategyRoutes from './routes/strategyRoutes'
 import emailRoutes from './routes/emailRoutes'
+import equipmentRoutes from './routes/equipmentRoutes'
+import visitorRoutes from './routes/visitorRoutes'
 import expenseRoutes from './routes/expenseRoutes'
 import notificationRoutes from './routes/notificationRoutes'
 import productRoutes from './routes/productRoutes'
@@ -96,6 +98,7 @@ app.use('/api/v1/marketing', marketingRoutes)
 app.use('/api/v1/strategies', strategyRoutes)
 app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/services', serviceRoutes)
+app.use('/api/v1/equipments', equipmentRoutes)
 app.use('/api/v1/emails', emailRoutes)
 app.use('/api/v1/expenses', expenseRoutes)
 app.use('/api/v1/notifications', notificationRoutes)
@@ -104,6 +107,7 @@ app.use('/api/v1/reviews', reviewRoutes)
 app.use('/api/v1/transactions', transactionRoutes)
 app.use('/api/v1/socials', socialRoutes)
 app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/visitors', visitorRoutes)
 
 app.use((req, res, next) => {
   handleError(res, 404, `Request not found: ${req.method} ${req.originalUrl}`)

@@ -398,6 +398,8 @@ function buildSearchQuery(req) {
     const textFields = [
         'title',
         'name',
+        'email',
+        'phone',
         'fullName',
         'username',
         'firstName',

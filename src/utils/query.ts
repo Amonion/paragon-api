@@ -471,6 +471,8 @@ function buildSearchQuery<T>(req: any): FilterQuery<T> {
   const textFields = [
     'title',
     'name',
+    'email',
+    'phone',
     'fullName',
     'username',
     'firstName',

@@ -13,6 +13,7 @@ export interface ITransaction extends Document {
   invoiceNumber: string
   delivery: string
   address: string
+  guide: string
   distance: number
   fuel: number
   partPayment: number
@@ -39,6 +40,7 @@ const TransactionSchema: Schema = new Schema(
     remark: { type: String },
     invoiceNumber: { type: String },
     address: { type: String },
+    guide: { type: String },
     delivery: { type: String },
     startingLocation: { type: String },
     totalAmount: { type: Number },

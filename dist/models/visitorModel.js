@@ -33,40 +33,18 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Transaction = void 0;
+exports.Visitor = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const TransactionSchema = new mongoose_1.Schema({
-    fullName: { type: String },
-    staffName: { type: String },
-    username: { type: String },
-    picture: { type: String },
-    email: { type: String },
+const VisitorSchema = new mongoose_1.Schema({
+    name: { type: String },
+    purpose: { type: String },
     phone: { type: String },
-    payment: { type: String },
-    supName: { type: String },
-    supAddress: { type: String },
-    supPhone: { type: String },
-    product: { type: Object },
     remark: { type: String },
-    invoiceNumber: { type: String },
-    address: { type: String },
-    guide: { type: String },
-    delivery: { type: String },
-    startingLocation: { type: String },
-    totalAmount: { type: Number },
-    distance: { type: Number },
-    fuel: { type: Number },
-    adjustedTotal: { type: Number },
-    partPayment: { type: Number },
-    receipt: { type: String },
-    nature: { type: String },
-    status: { type: Boolean },
-    isProfit: { type: Boolean, default: false },
-    cartProducts: { type: Array },
-    startedAt: { type: Date },
-    endedAt: { type: Date },
+    visited: { type: String },
+    staffUsername: { type: String },
+    leftAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Transaction = mongoose_1.default.model('Transaction', TransactionSchema);
+exports.Visitor = mongoose_1.default.model('Visitor', VisitorSchema);
