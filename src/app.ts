@@ -24,6 +24,7 @@ import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 import { UsersSocket } from './routes/socket/usersSocket'
+import { createActivity } from './controllers/activityController'
 
 dotenv.config()
 
@@ -78,6 +79,9 @@ io.on('connection', (socket) => {
     switch (data.to) {
       case 'users':
         await UsersSocket(data)
+        break
+      case 'activity':
+        await createActivity(data)
         break
       default:
         break

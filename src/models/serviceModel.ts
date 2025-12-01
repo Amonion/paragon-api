@@ -27,6 +27,7 @@ const ServiceSchema: Schema = new Schema(
     description: { type: String },
     staffName: { type: String },
     title: { type: String },
+    warranty: { type: String },
     video: { type: String },
     username: { type: String },
     startedAt: { type: Date },
