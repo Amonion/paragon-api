@@ -33,24 +33,14 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Service = void 0;
+exports.Activity = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const ServiceSchema = new mongoose_1.Schema({
-    clientName: { type: String },
-    clientPhone: { type: String },
-    clientAddress: { type: String },
-    receipt: { type: String },
-    amount: { type: Number },
-    description: { type: String },
+const ActivitySchema = new mongoose_1.Schema({
     staffName: { type: String },
-    title: { type: String },
-    warranty: { type: String },
-    video: { type: String },
-    username: { type: String },
-    startedAt: { type: Date },
-    endedAt: { type: Date },
+    page: { type: String },
+    staffUsername: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Service = mongoose_1.default.model('Service', ServiceSchema);
+exports.Activity = mongoose_1.default.model('Activity', ActivitySchema);

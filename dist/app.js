@@ -39,6 +39,7 @@ const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 const usersSocket_1 = require("./routes/socket/usersSocket");
+const activityController_1 = require("./controllers/activityController");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
@@ -81,6 +82,9 @@ io.on('connection', (socket) => {
         switch (data.to) {
             case 'users':
                 yield (0, usersSocket_1.UsersSocket)(data);
+                break;
+            case 'activity':
+                yield (0, activityController_1.createActivity)(data);
                 break;
             default:
                 break;
